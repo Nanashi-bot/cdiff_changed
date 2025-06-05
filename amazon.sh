@@ -1,7 +1,7 @@
 python3 main.py --batch_size 1024\
        	--update_freq 1\
        	--lr 0.0005\
-       	--epochs 500\
+       	--epochs 1000\
        	--eval_every 50\
        	--check_every 2\
        	--diffusion_steps 200\

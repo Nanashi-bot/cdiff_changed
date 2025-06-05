@@ -100,8 +100,8 @@ class SeqDatasetBoxCox(Dataset):
 
                 #### CHANGED BY ME TO INCLUDE FIRST ITEM
 
-        self.time_seq = [torch.tensor(seq[1:]) for seq in time_seq]
-        #self.time_seq = [torch.tensor(seq[0:]) for seq in time_seq]
+        #self.time_seq = [torch.tensor(seq[1:]) for seq in time_seq]
+        self.time_seq = [torch.tensor(seq[0:]) for seq in time_seq]
 
         # # Need to know the length of the sequences for dealing with the varied padding
         # self.history_times = [seq[:-target_length] for seq in self.time_seq]
@@ -115,8 +115,8 @@ class SeqDatasetBoxCox(Dataset):
         
 
             ### CHANGED BY ME TO INCLUDE FIRST ITEM
-        #self.event_seq = [torch.tensor(seq[0:]) for seq in event_seq]
-        self.event_seq = [torch.tensor(seq[1:]) for seq in event_seq]
+        self.event_seq = [torch.tensor(seq[0:]) for seq in event_seq]
+        #self.event_seq = [torch.tensor(seq[1:]) for seq in event_seq]
 
 
         # self.history_types = [seq[:-target_length] for seq in self.event_seq]
@@ -128,8 +128,8 @@ class SeqDatasetBoxCox(Dataset):
         # Un-normalized inter-arrival time
                 #### CHANGED BY ME TO INCLUDE FIRST ITEM
 
-        #self.unnormed_time_delta_seq = [torch.tensor(seq[0:]) for seq in time_delta_seq]
-        self.unnormed_time_delta_seq = [torch.tensor(seq[1:]) for seq in time_delta_seq]
+        self.unnormed_time_delta_seq = [torch.tensor(seq[0:]) for seq in time_delta_seq]
+        #self.unnormed_time_delta_seq = [torch.tensor(seq[1:]) for seq in time_delta_seq]
 
 
         # self.unnormed_history_dt = [seq[:-target_length] for seq in self.unnormed_time_delta_seq]
@@ -199,8 +199,8 @@ class SeqDatasetBoxCox(Dataset):
 
                         #### CHANGED BY ME TO INCLUDE FIRST ITEM
 
-            time_delta_flatten += seq[1:]
-            #time_delta_flatten += seq[0:]
+#            time_delta_flatten += seq[1:]
+            time_delta_flatten += seq[0:]
 
 
 
