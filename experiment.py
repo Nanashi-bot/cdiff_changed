@@ -100,7 +100,9 @@ class Experiment(DiffusionExperiment):
                         pred_x[
                             pred_x > -1 / self.args.train_lambda_boxcox] = -1 / self.args.train_lambda_boxcox - Constants.EPS * 100
                     pred_x = inv_boxcox(pred_x.cpu(), self.args.train_lambda_boxcox) / self.args.scale
-                    pred_x[pred_x < 0] = ((self.args.min_inter_time + Constants.EPS) * 0.85).to(self.args.device)
+                    # CHANGED HERE
+                    pred_x[pred_x < 0] = torch.tensor((self.args.min_inter_time + Constants.EPS) * 0.85, dtype=pred_x.dtype, device=pred_x.device)
+                    #pred_x[pred_x < 0] = ((self.args.min_inter_time + Constants.EPS) * 0.85).to(self.args.device)
                 else:
                     pred_x = pred_x * self.args.train_ln_std + self.args.train_ln_mean
                     pred_x = torch.exp(pred_x)
@@ -109,8 +111,10 @@ class Experiment(DiffusionExperiment):
                     else:
                         pred_x = pred_x / Constants.SCALE_UNIFORM
                     pred_x[pred_x < 0] = ((self.args.min_inter_time + Constants.EPS) * 0.85).to(self.args.device)
-
-                pred_x[pred_x < 0] = (self.args.min_inter_time * 0.85 + Constants.EPS).to(self.args.device)
+                
+                # CHANGED HERE
+                pred_x[pred_x < 0] = torch.tensor((self.args.min_inter_time + Constants.EPS) * 0.85, dtype=pred_x.dtype, device=pred_x.device)
+                #pred_x[pred_x < 0] = (self.args.min_inter_time * 0.85 + Constants.EPS).to(self.args.device)
 
                 pred_e = pred_e.cpu().long()
                 pred_x = pred_x.cpu()

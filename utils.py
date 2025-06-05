@@ -130,8 +130,13 @@ def run_eval(args):
         args = parser.parse_args()
         eval_seed = args.eval_seed
 
+
+    ## CHANGED BY ME:
     path_args = '{}/args.pickle'.format(args.log_path)
+    #path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/taobao/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/2025-06-03_10-37-22/args.pickle'
+    
     path_check = '{}/check/checkpoint.pt'.format(args.log_path)
+    #path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/taobao/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/2025-06-03_10-37-22/check/checkpoint.pt'
 
     with open(path_args, 'rb') as f:
         args = pickle.load(f)
@@ -180,7 +185,10 @@ def run_eval(args):
     #########################################################
 
     model = get_model(args, num_classes=num_classes)
-    checkpoint = torch.load(path_check)
+    ## ADDED BY ME
+    #checkpoint = torch.load("/home/aditya-mainak/event_prediction/cdiff/log/flow/taobao/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/2025-06-03_10-37-22/check/checkpoint.pt", weights_only=False)
+    checkpoint = torch.load(path_check, weights_only=False)
+
     model.load_state_dict(checkpoint['model'])
     print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
 
@@ -317,7 +325,9 @@ def run_eval(args):
                     pred_x[
                         pred_x > -1 / args.train_lambda_boxcox] = -1 / args.train_lambda_boxcox - Constants.EPS * 1000
                 pred_x = inv_boxcox(pred_x.cpu(), args.train_lambda_boxcox) / args.scale
-                pred_x[pred_x < 0] = ((args.min_inter_time + Constants.EPS) * 0.85).to(args.device)
+                ## CHANGED BY ME
+                pred_x[pred_x < 0] = torch.tensor((args.min_inter_time + Constants.EPS) * 0.85, dtype=pred_x.dtype, device=pred_x.device)
+                #pred_x[pred_x < 0] = ((args.min_inter_time + Constants.EPS) * 0.85).to(args.device)
             else:
                 pred_x = pred_x * args.train_ln_std + args.train_ln_mean
                 pred_x = torch.exp(pred_x)
@@ -327,7 +337,9 @@ def run_eval(args):
                     pred_x = pred_x / Constants.SCALE_UNIFORM
                 pred_x[pred_x < 0] = ((args.min_inter_time + Constants.EPS) * 0.85).to(args.device)
 
-            pred_x[pred_x < 0] = (min_inter_time + Constants.EPS).to(args.device)
+            ## CHANGED BY ME
+            pred_x[pred_x < 0] = torch.tensor((min_inter_time + Constants.EPS), device=pred_x.device, dtype=pred_x.dtype)
+            #pred_x[pred_x < 0] = (min_inter_time + Constants.EPS).to(args.device)
 
             pred_x_total = torch.cat([pred_x_total, pred_x.cpu()], dim=0)
             pred_e_total = torch.cat([pred_e_total, pred_e.cpu()], dim=0)
@@ -460,6 +472,16 @@ def run_eval(args):
     print('total sampling time is {total_time: .3f}'.format(total_time=total_sampling_time))
     print('Number of total samples: {}'.format(pred_e_copy.flatten().size(0)))
     print('Number of samples per sequence: {}'.format(num_samples))
+
+    ## ADDED BY ME:
+    print("MAPE MEAN")
+    print(mape_mean)
+    print("MAPE STD")
+    print(mape_std)
+    print("SMAPE MEAN")
+    print(smape_mean) 
+    print("SMAPE STD")
+    print(smape_std)
 
     with open(path_samples_result, 'w') as f:
         f.write('distance (fixed forecasting): {:.3f}\n'.format(

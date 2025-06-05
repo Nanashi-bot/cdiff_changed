@@ -17,7 +17,8 @@ dataset_choices = {'stackoverflow', 'taxi', 'taobao', 'syn_5_0_2', 'financial', 
 def add_data_args(parser):
     # Data params
     parser.add_argument('--dataset', type=str, default='stackoverflow', choices=dataset_choices)
-    parser.add_argument('--dataset_dir', type=str, default='data/taxi/')
+    ## CHANGED
+    parser.add_argument('--dataset_dir', type=str, default='/home/aditya-mainak/event_prediction/cdiff/data/so/so_v2')
     parser.add_argument('--validation', type=eval, default=True)
     parser.add_argument('--tgt_len', type=int, default=20)
     parser.add_argument('--boxcox', action='store_true', help="if not boxcox then ln")

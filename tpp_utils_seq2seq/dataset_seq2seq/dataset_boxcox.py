@@ -97,7 +97,12 @@ class SeqDatasetBoxCox(Dataset):
 
         # time step
         time_seq = [[x["time_since_start"] for x in seq] for seq in self.data]
-        self.time_seq = [torch.tensor(seq[1:]) for seq in time_seq]
+
+                #### CHANGED BY ME TO INCLUDE FIRST ITEM
+
+        #self.time_seq = [torch.tensor(seq[1:]) for seq in time_seq]
+        self.time_seq = [torch.tensor(seq[0:]) for seq in time_seq]
+
         # # Need to know the length of the sequences for dealing with the varied padding
         # self.history_times = [seq[:-target_length] for seq in self.time_seq]
         # self.seq_lengths = [seq.size(0) for seq in self.history_times]
@@ -107,7 +112,13 @@ class SeqDatasetBoxCox(Dataset):
         event_seq = [[x["type_event"] for x in seq] for seq in self.data]
         # The num_types is the padding
         # i.e., if there are 22 event types, then 0-21 is the type indicator, 22 is the padding
-        self.event_seq = [torch.tensor(seq[1:]) for seq in event_seq]
+        
+
+            ### CHANGED BY ME TO INCLUDE FIRST ITEM
+        self.event_seq = [torch.tensor(seq[0:]) for seq in event_seq]
+        #self.event_seq = [torch.tensor(seq[1:]) for seq in event_seq]
+
+
         # self.history_types = [seq[:-target_length] for seq in self.event_seq]
         # self.target_types = [seq[-target_length:] for seq in self.event_seq]
 
@@ -115,7 +126,12 @@ class SeqDatasetBoxCox(Dataset):
         time_delta_seq = [[x["time_since_last_event"] for x in seq] for seq in self.data]
 
         # Un-normalized inter-arrival time
-        self.unnormed_time_delta_seq = [torch.tensor(seq[1:]) for seq in time_delta_seq]
+                #### CHANGED BY ME TO INCLUDE FIRST ITEM
+
+        self.unnormed_time_delta_seq = [torch.tensor(seq[0:]) for seq in time_delta_seq]
+        #self.unnormed_time_delta_seq = [torch.tensor(seq[1:]) for seq in time_delta_seq]
+
+
         # self.unnormed_history_dt = [seq[:-target_length] for seq in self.unnormed_time_delta_seq]
         # self.unnormed_target_dt = [seq[-target_length:] for seq in self.unnormed_time_delta_seq]
 
@@ -179,7 +195,15 @@ class SeqDatasetBoxCox(Dataset):
             else:
                 seq = [self.scale * (i + Constants.EPS) for i in seq if
                        i != 0 and i < self.mean_inter_time + self.std_inter_time]
-            time_delta_flatten += seq[1:]
+
+
+                        #### CHANGED BY ME TO INCLUDE FIRST ITEM
+
+#            time_delta_flatten += seq[1:]
+            time_delta_flatten += seq[0:]
+
+
+
         if mode == 'train':
             assert lmbda_boxcox == 0, 'For train mode, lmbda_boxcox should be 0, we are finding it!'
             _, self.fitted_lambda = stats.boxcox(time_delta_flatten)

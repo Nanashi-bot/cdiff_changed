@@ -1,0 +1,21 @@
+python3 main.py --batch_size 2048\
+       	--update_freq 1\
+       	--lr 0.0005\
+       	--epochs 500\
+       	--eval_every 50\
+       	--check_every 2\
+       	--diffusion_steps 200\
+	--gamma 0.99\
+       	--log_home .\
+       	--dataset stackoverflow\
+       	--dataset_dir /home/aditya-mainak/event_prediction/cdiff/data/so/so_v2\
+       	--transformer_dim 32\
+       	--transformer_heads 2\
+       	--num_encoder_layers 1\
+       	--dim_feedforward 64\
+       	--num_decoder_layers 1\
+       	--scheduler cosanneal\
+       	--num_samples 7\
+       	--boxcox\
+       	--seed 1\
+       	--tgt_len 20

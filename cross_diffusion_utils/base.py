@@ -11,13 +11,14 @@ def get_args_table(args_dict):
 
 
 def get_metric_table(metric_dict, epochs):
-    pass
-#     table = PrettyTable()
-#     table.add_column('Epoch', epochs)
-#     if len(metric_dict)>0:
-#         for metric_name, metric_values in metric_dict.items():
-#             table.add_column(metric_name, metric_values)
-#     return table
+    ## CHANGED BY ME
+#    pass
+    table = PrettyTable()
+    table.add_column('Epoch', epochs)
+    if len(metric_dict)>0:
+        for metric_name, metric_values in metric_dict.items():
+            table.add_column(metric_name, metric_values)
+    return table
 
 class BaseExperiment(object):
 
