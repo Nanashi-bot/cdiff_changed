@@ -8,7 +8,7 @@ python3 main.py --batch_size 2048 \
 	--gamma 0.99 \
 	--log_home .\
        	--dataset taobao \
-	--dataset_dir /home/aditya-mainak/event_prediction/cdiff/data/new_taobao \
+	--dataset_dir /home/aditya-mainak/event_prediction/cdiff/data/taobao \
 	--transformer_dim 32 \
 	--transformer_heads 2 \
 	--num_encoder_layers 1 \

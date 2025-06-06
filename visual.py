@@ -1,21 +1,25 @@
 import pickle
 import torch
+import os
 
 # TAKING AMAZON DATA
 
 
 # THE FOLLOWING ARE FOR WHEN SEQUENCE IS STARTED FROM SECOND VALUE NOT FIRST
-gt_dt1 = torch.load('./log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original/samples/sample_ep350_s1_num_s_7_num_steps_200/gt_dt.pt')
-gt_type1 = torch.load('./log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original/samples/sample_ep350_s1_num_s_7_num_steps_200/gt_type.pt')
-samples_dt1 = torch.load('./log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original/samples/sample_ep350_s1_num_s_7_num_steps_200/samples_dt.pt')
-samples_type1 = torch.load('./log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original/samples/sample_ep350_s1_num_s_7_num_steps_200/samples_type.pt')
+base_path = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/samples/sample_ep900_s1_num_s_7_num_steps_200/'
+gt_dt1 = torch.load(os.path.join(base_path, 'gt_dt.pt'))
+gt_type1 = torch.load(os.path.join(base_path, 'gt_type.pt'))
+samples_dt1 = torch.load(os.path.join(base_path, 'samples_dt.pt'))
+samples_type1 = torch.load(os.path.join(base_path, 'samples_type.pt'))
 
 
 # THE FOLLOWING ARE FOR WHEN SEQUENCE IS STARTED FROM FIRST VALUE ITSELF
-gt_dt2 = torch.load('./log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/changed/samples/sample_ep400_s1_num_s_7_num_steps_200/gt_dt.pt')
-gt_type2 = torch.load('./log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/changed/samples/sample_ep400_s1_num_s_7_num_steps_200/gt_type.pt')
-samples_dt2 = torch.load('./log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/changed/samples/sample_ep400_s1_num_s_7_num_steps_200/samples_dt.pt')
-samples_type2 = torch.load('./log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/changed/samples/sample_ep400_s1_num_s_7_num_steps_200/samples_type.pt')
+base_path = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/changed1000/samples/sample_ep950_s1_num_s_7_num_steps_200'
+gt_dt2 = torch.load(os.path.join(base_path, 'gt_dt.pt'))
+gt_type2 = torch.load(os.path.join(base_path, 'gt_type.pt'))
+samples_dt2 = torch.load(os.path.join(base_path, 'samples_dt.pt'))
+samples_type2 = torch.load(os.path.join(base_path, 'samples_type.pt'))
+
 
 # 500 length
 #print(len(gt_dt))

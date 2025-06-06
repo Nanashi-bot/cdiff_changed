@@ -148,16 +148,22 @@ def get_data(args):
             args.time_range = 4.5/2
         if args.tgt_len == 5:
             args.time_range = 4.5/4
+
+            ## CHANGED BY ME
     if args.dataset == 'taobao':
         args.num_classes = 17
         if args.tgt_len == 25:
-            args.time_range = 6.5/3
+            #args.time_range = 6.5/3
+            args.time_range = 6.5
         # args.time_range = 1.5
         if args.tgt_len == 20:
-            args.time_range = 6.5
-        if args.tgt_len == 10:
+            #args.time_range = 6.5
             args.time_range = 6.5/2
+        if args.tgt_len == 10:
+            #args.time_range = 6.5/2
+            args.time_range = 6.5/2/3
         if args.tgt_len == 5:
+            #args.time_range = 6.5/4
             args.time_range = 6.5/4
     if args.dataset == 'syn_5_0_2':
         args.num_classes = 5
