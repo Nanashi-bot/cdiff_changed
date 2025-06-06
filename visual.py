@@ -31,7 +31,7 @@ pred_x2 = samples_dt2.mean(dim=-1).squeeze(-1)
 
 
 # Total 500
-for i in range(3):
+for i in range(10):
 
     print(f"###### FOR SEQUENCE {i+1}: ######\n")
     print("Ground truth type:\n",' '.join(str(v) for v in gt_type1[i].tolist()))
