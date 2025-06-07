@@ -85,7 +85,13 @@ class SeqDatasetLn(Dataset):
 
         # time step
         time_seq = [[x["time_since_start"] for x in seq] for seq in self.data]
-        self.time_seq = [torch.tensor(seq[1:]) for seq in time_seq]
+
+            ### CHANGED BY ME
+
+        #self.time_seq = [torch.tensor(seq[1:]) for seq in time_seq]
+        self.time_seq = [torch.tensor(seq[0:]) for seq in time_seq]
+
+
         # # Need to know the length of the sequences for dealing with the varied padding
         # self.history_times = [seq[:-target_length] for seq in self.time_seq]
         # self.seq_lengths = [seq.size(0) for seq in self.history_times]
@@ -95,15 +101,22 @@ class SeqDatasetLn(Dataset):
         event_seq = [[x["type_event"] for x in seq] for seq in self.data]
         # The num_types is the padding
         # i.e., if there are 22 event types, then 0-21 is the type indicator, 22 is the padding
-        self.event_seq = [torch.tensor(seq[1:]) for seq in event_seq]
+
+               #### CHANGED BY ME
+        #self.event_seq = [torch.tensor(seq[1:]) for seq in event_seq]
+        self.event_seq = [torch.tensor(seq[0:]) for seq in event_seq]
+
+
         # self.history_types = [seq[:-target_length] for seq in self.event_seq]
         # self.target_types = [seq[-target_length:] for seq in self.event_seq]
 
         # inter-arrival time
         time_delta_seq = [[x["time_since_last_event"] for x in seq] for seq in self.data]
 
+            ### CHANGED BY ME
         # Un-normalized inter-arrival time
-        self.unnormed_time_delta_seq = [torch.tensor(seq[1:])+Constants.EPS for seq in time_delta_seq]
+        #self.unnormed_time_delta_seq = [torch.tensor(seq[1:])+Constants.EPS for seq in time_delta_seq]
+        self.unnormed_time_delta_seq = [torch.tensor(seq[0:])+Constants.EPS for seq in time_delta_seq]
 
         if mode == 'train':
             self.mean_inter_time, self.std_inter_time = self.get_mean_std(self.unnormed_time_delta_seq)
@@ -115,12 +128,19 @@ class SeqDatasetLn(Dataset):
         print('mean: {:.3f} | std: {:.3f} | min: {:.3f}'.format(self.mean_inter_time,
                                                                 self.std_inter_time,
                                                                 self.min_inter_time))
+        
+            #### CHANGED BY ME
+
         if data_name == 'retweet':
+#            self.normed_time_delta_seq = [
+#                torch.log((torch.tensor(seq).float() + Constants.EPS) * Constants.SCALE_RETWEET)[1:] for seq in
+#                time_delta_seq]
             self.normed_time_delta_seq = [
-                torch.log((torch.tensor(seq).float() + Constants.EPS) * Constants.SCALE_RETWEET)[1:] for seq in
-                time_delta_seq]
+                torch.log((torch.tensor(seq).float() + Constants.EPS) * Constants.SCALE_RETWEET)[0:] for seq in time_delta_seq]
+            
         else:
-            self.normed_time_delta_seq = [torch.log((torch.tensor(seq).float() + Constants.EPS)*Constants.SCALE_UNIFORM)[1:] for seq in time_delta_seq]
+#            self.normed_time_delta_seq = [torch.log((torch.tensor(seq).float() + Constants.EPS)*Constants.SCALE_UNIFORM)[1:] for seq in time_delta_seq]
+            self.normed_time_delta_seq = [torch.log((torch.tensor(seq).float() + Constants.EPS)*Constants.SCALE_UNIFORM)[0:] for seq in time_delta_seq]
 
         if mode == 'train':
             self.ln_mean, self.ln_std = self.get_mean_std(self.normed_time_delta_seq)
