@@ -172,11 +172,6 @@ def run_eval(args):
 
     #print("train_loader type:", type(train_loader))
     #print("train type:", type(train))
-    print("len(train):", len(train))
-    print("len(train[0])", len(train[0]))
-    print("Sample train[0][0]:", train[0][0])
-    print("Sample train[0]:", train[0])
-
     std_inter_time = train.std_inter_time
     mean_inter_time = train.mean_inter_time
     min_inter_time = train.min_inter_time
@@ -184,6 +179,58 @@ def run_eval(args):
     args.validation = False
 
     train_loader, test_loader, data_shape, num_classes = get_data(args)
+
+
+    print("len(train):", len(train_loader))
+    #print("len(train[0]):", len(train_loader[0]))
+    #print("len(train[0][0]):", len(train_loader[0][0]))
+    #print("Sample train[0][0]:", train[0][0])
+    #print("Sample train[0]:", train[0])
+
+    batch = next(iter(train_loader))
+
+#    print("history_times:", batch.history_times)
+    print("len history times", len(batch.history_times))
+    print("len history times[0]", len(batch.history_times[0]))
+#    print("len history times[1]", len(batch.history_times[1]))
+#    print("history times[0]", batch.history_times[0])
+#    print("history times[1]", batch.history_times[1])
+
+
+#    print("history_types:", batch.history_types)    
+    print("len history types", len(batch.history_types))
+    print("len history types[0]", len(batch.history_types[0]))
+    print("history types[0]", batch.history_types[0])
+#    print("history types[1]", batch.history_types[1])
+ 
+#    print("history_dt:", batch.history_dt)
+    print("history_dt[0]:", batch.history_dt[0])
+#    print("target_times:", batch.target_times)
+#    print("len target times", len(batch.target_times))
+#    print("len target times[0]", len(batch.target_times[0]))
+#    print("len target times[1]", len(batch.target_times[1]))
+#    print("target times[0]", batch.target_times[0])
+#    print("target_types:", batch.target_types)
+#    print("target_dt:", batch.target_dt)
+#    print("target_onehots:", batch.target_onehots)
+#    print("unnormed_history_dt:", batch.unnormed_history_dt)
+    print("len unnormed_history_dt:", len(batch.unnormed_history_dt))
+    print("unnormed_history_dt[0]:", batch.unnormed_history_dt[0])
+#    print("unnormed_target_dt:", batch.unnormed_target_dt)
+    print("unnormed_target_dt[0]:", batch.unnormed_target_dt[0])
+    print("seq_lengths:", batch.seq_lengths)
+    print("Num of sequences:",len(batch.seq_lengths))
+    
+
+
+    print("len(test):", len(test_loader))
+    #print("len(test[0]):", len(test_loader[0]))
+    #print("len(test[0][0]):", len(test_loader[0][0]))
+    #print("Sample test[0][0]:", test[0][0])
+    #print("Sample test[0]:", test[0])
+
+
+
 
     args.validation = True
 
@@ -481,14 +528,10 @@ def run_eval(args):
     print('Number of samples per sequence: {}'.format(num_samples))
 
     ## ADDED BY ME:
-    print("MAPE MEAN")
-    print(mape_mean)
-    print("MAPE STD")
-    print(mape_std)
-    print("SMAPE MEAN")
-    print(smape_mean) 
-    print("SMAPE STD")
-    print(smape_std)
+    print("MAPE MEAN", mape_mean)
+    print("MAPE STD", mape_std)
+    print("SMAPE MEAN", smape_mean)
+    print("SMAPE STD", smape_std)
 
     #with open(path_samples_result, 'w') as f:
     #    f.write('distance (fixed forecasting): {:.3f}\n'.format(
