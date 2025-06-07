@@ -471,14 +471,10 @@ def run_eval(args):
     print('Number of samples per sequence: {}'.format(num_samples))
 
     ## ADDED BY ME:
-    print("MAPE MEAN")
-    print(mape_mean)
-    print("MAPE STD")
-    print(mape_std)
-    print("SMAPE MEAN")
-    print(smape_mean) 
-    print("SMAPE STD")
-    print(smape_std)
+    print("MAPE MEAN", int(mape_mean))
+    print("MAPE STD", int(mape_std))
+    print("SMAPE MEAN", int(smape_mean)) 
+    print("SMAPE STD", int(smape_std))
 
     with open(path_samples_result, 'w') as f:
         f.write('distance (fixed forecasting): {:.3f}\n'.format(

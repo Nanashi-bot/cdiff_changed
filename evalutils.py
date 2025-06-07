@@ -78,7 +78,6 @@ def run_train(args):
     ## Specify data ##
     ##################
 
-    print("args.boxcox", args.boxcox)
     train_loader, eval_loader, data_shape, num_classes = get_data(args)
     data_id = get_data_id(args)
 
@@ -534,10 +533,10 @@ def run_eval(args):
     print('Number of samples per sequence: {}'.format(num_samples))
 
     ## ADDED BY ME:
-    print("MAPE MEAN", mape_mean)
-    print("MAPE STD", mape_std)
-    print("SMAPE MEAN", smape_mean)
-    print("SMAPE STD", smape_std)
+    print("MAPE MEAN", int(mape_mean))
+    print("MAPE STD", int(mape_std))
+    print("SMAPE MEAN", int(smape_mean))
+    print("SMAPE STD", int(smape_std))
 
     #with open(path_samples_result, 'w') as f:
     #    f.write('distance (fixed forecasting): {:.3f}\n'.format(

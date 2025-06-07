@@ -134,10 +134,10 @@ def run_eval(args):
 
     ## CHANGED BY ME:
     #path_args = '{}/args.pickle'.format(args.log_path)
-    path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/args.pickle'
+    path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/args.pickle'
     
     #path_check = '{}/check/checkpoint.pt'.format(args.log_path)
-    path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt'
+    path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
 
     with open(path_args, 'rb') as f:
         args = pickle.load(f)
@@ -338,6 +338,8 @@ def run_eval(args):
     gt_e_total = torch.empty(0, args.tgt_len).to('cpu')
     gt_x_total = torch.empty(0, args.tgt_len).to('cpu')
 
+    counter = 0
+
     with torch.no_grad():
         since = time.time()
         for iteration, batch in enumerate(test_loader):
@@ -364,18 +366,31 @@ def run_eval(args):
                 print("now it is sample:", i)
                 p_x = torch.empty(tgt_e.size(0), 0).to(device)
                 p_e = torch.empty(tgt_e.size(0), 0).to(device)
-                hist_x = hist_x_original.clone()
-                hist_e = hist_e_original.clone()
+                #hist_x = hist_x_original.clone()
+                #hist_e = hist_e_original.clone()
                 # for j in range(int(tgt_e.size(1))):
 
                     ### GIVING NULL CONTEXT FOR SAMPLING:
                 hist_x[:] = 0
-                hist_e[:] = 16 
+                hist_e[:] = 16    # 16 because there are 15 events in amazon dataset
                 history_times[:] = 0
 
                 p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
                 pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
+
+
+                if counter == 0:
+                    print("Before boxcox:")
+                    ## LENGTH 500 P_E AND P_X GENERATED
+                    print("First sequence:")
+                    print("Predicted events: \n",p_e[0])
+                    print("Predicted timestamps: \n",p_x[0])
+                    #print()
+                    print("Second sequence:")
+                    print("Predicted events: \n",p_e[1])
+                    print("Predicted timestamps: \n",p_x[1])
+                    print("\n\n")
 
             if args.boxcox:
                 # https://stats.stackexchange.com/questions/541748/simple-problem-with-box-cox-transformation-in-a-time-series-model
@@ -409,6 +424,26 @@ def run_eval(args):
             pred_e_total = torch.cat([pred_e_total, pred_e.cpu()], dim=0)
             gt_e_total = torch.cat([gt_e_total, tgt_e.cpu()], dim=0)
             gt_x_total = torch.cat([gt_x_total, unnormed_target_dt.cpu()], dim=0)
+
+            if counter == 0:
+                print("After inverse boxcox:")
+                print("First sequence:")
+                print("Predicted events: \n",pred_e[0].flatten().long())
+                print("Predicted timestamps: \n",pred_x[0].flatten())
+
+                print("Ground truth events: \n",tgt_e[0])
+                print("Ground truth timestamp: \n",unnormed_target_dt[0])
+                print("\n\n")
+                print("Second sequence:")
+                print("Predicted events: \n",pred_e[1].flatten().long())
+                print("Predicted timestamps: \n",pred_x[1].flatten())
+
+                print("Ground truth events: \n",tgt_e[1])
+                print("Ground truth timestamp: \n",unnormed_target_dt[1])
+                print("\n\n")
+
+                counter += 1
+
 
     ###################################################################################################
     ########################################### Record time ###########################################
@@ -538,10 +573,10 @@ def run_eval(args):
     print('Number of samples per sequence: {}'.format(num_samples))
 
     ## ADDED BY ME:
-    print("MAPE MEAN", mape_mean)
-    print("MAPE STD", mape_std)
-    print("SMAPE MEAN", smape_mean)
-    print("SMAPE STD", smape_std)
+    print("MAPE MEAN", int(mape_mean))
+    print("MAPE STD", int(mape_std))
+    print("SMAPE MEAN", int(smape_mean))
+    print("SMAPE STD", int(smape_std))
 
     #with open(path_samples_result, 'w') as f:
     #    f.write('distance (fixed forecasting): {:.3f}\n'.format(
