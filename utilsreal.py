@@ -133,10 +133,8 @@ def run_eval(args):
 
     ## CHANGED BY ME:
     path_args = '{}/args.pickle'.format(args.log_path)
-    #path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/args.pickle'
     
     path_check = '{}/check/checkpoint.pt'.format(args.log_path)
-    #path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt'
 
     with open(path_args, 'rb') as f:
         args = pickle.load(f)
@@ -186,7 +184,6 @@ def run_eval(args):
 
     model = get_model(args, num_classes=num_classes)
     ## ADDED BY ME
-    #checkpoint = torch.load("/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt", weights_only=False)
     checkpoint = torch.load(path_check, weights_only=False)
 
     model.load_state_dict(checkpoint['model'])

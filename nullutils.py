@@ -134,12 +134,10 @@ def run_eval(args):
 
     ## CHANGED BY ME:
     #path_args = '{}/args.pickle'.format(args.log_path)
-    #path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/args.pickle'
-    path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/args.pickle'
+    path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/args.pickle'
     
     #path_check = '{}/check/checkpoint.pt'.format(args.log_path)
-    #path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt'
-    path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
+    path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt'
 
     with open(path_args, 'rb') as f:
         args = pickle.load(f)
@@ -230,7 +228,7 @@ def run_eval(args):
     
 
 
-    #print("len(test):", len(test_loader))
+#    print("len(test):", len(test_loader))
     #print("len(test[0]):", len(test_loader[0]))
     #print("len(test[0][0]):", len(test_loader[0][0]))
     #print("Sample test[0][0]:", test[0][0])
@@ -369,6 +367,12 @@ def run_eval(args):
                 hist_x = hist_x_original.clone()
                 hist_e = hist_e_original.clone()
                 # for j in range(int(tgt_e.size(1))):
+
+                    ### GIVING NULL CONTEXT FOR SAMPLING:
+                hist_x[:] = 0
+                hist_e[:] = 16 
+                history_times[:] = 0
+
                 p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
                 pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)

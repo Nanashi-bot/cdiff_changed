@@ -15,7 +15,7 @@ python3 main.py --batch_size 1024\
        	--dim_feedforward 64\
         --num_decoder_layers 1\
        	--scheduler cosanneal\
-       	--num_samples 7\
+       	--num_samples 1\
         --boxcox \
        	--tgt_len 20\
        	--seed 1

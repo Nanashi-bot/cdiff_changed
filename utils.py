@@ -132,17 +132,9 @@ def run_eval(args):
 
 
     ## CHANGED BY ME:
-    #path_args = '{}/args.pickle'.format(args.log_path)
-    path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/args.pickle'
-    #path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/changed1000/args.pickle'
-    #path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_ln_200_tgt_len_20/cosanneal/original1000/args.pickle'
-    #path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_ln_200_tgt_len_20/cosanneal/changed1000/args.pickle'
+    path_args = '{}/args.pickle'.format(args.log_path)
     
-    #path_check = '{}/check/checkpoint.pt'.format(args.log_path)
-    path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt'
-    #path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/changed1000/check/checkpoint.pt'
-    #path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_ln_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt'
-    #path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_ln_200_tgt_len_20/cosanneal/changed1000/check/checkpoint.pt'
+    path_check = '{}/check/checkpoint.pt'.format(args.log_path)
 
     with open(path_args, 'rb') as f:
         args = pickle.load(f)
@@ -176,8 +168,6 @@ def run_eval(args):
         train_loader, train = load_dataset_ln(dataset_dir=args.dataset_dir, mode='train',
                                               device=args.device, data_name=args.dataset, target_length=args.tgt_len)
 
-    #print("train_loader type:", type(train_loader))
-    #print("train type:", type(train))
     std_inter_time = train.std_inter_time
     mean_inter_time = train.mean_inter_time
     min_inter_time = train.min_inter_time
@@ -185,73 +175,6 @@ def run_eval(args):
     args.validation = False
 
     train_loader, test_loader, data_shape, num_classes = get_data(args)
-
-
-#    print("len(train):", len(train_loader))
-    #print("len(train[0]):", len(train_loader[0]))
-    #print("len(train[0][0]):", len(train_loader[0][0]))
-    #print("Sample train[0][0]:", train[0][0])
-    #print("Sample train[0]:", train[0])
-
-#    batch = next(iter(train_loader))
-    batch = next(iter(test_loader))
-
-    
-    print("Num of sequences:",len(batch.seq_lengths))
-    print("history times[0]", batch.history_times[0])
-    print("history types[0]", batch.history_types[0])
-    print("history_dt[0]:", batch.history_dt[0])
-    print("unnormed_history_dt[0]:", batch.unnormed_history_dt[0])
-    print("unnormed_target_dt[0]:", batch.unnormed_target_dt[0])
-
-
-    print("Num of sequences:",len(batch.seq_lengths))
-#    print("history_times:", batch.history_times)
-#    print("len history times", len(batch.history_times))
-#    print("len history times[0]", len(batch.history_times[0]))
-#    print("len history times[1]", len(batch.history_times[1]))
-#    print("history times[0]", batch.history_times[0])
-    print("history times[1]", batch.history_times[1])
-
-
-#    print("history_types:", batch.history_types)    
-#    print("len history types", len(batch.history_types))
-#    print("len history types[0]", len(batch.history_types[0]))
-#    print("history types[0]", batch.history_types[0])
-    print("history types[1]", batch.history_types[1])
- 
-#    print("history_dt:", batch.history_dt)
-#    print("history_dt[0]:", batch.history_dt[0])
-    print("history_dt[1]:", batch.history_dt[1])
-#    print("target_times:", batch.target_times)
-#    print("len target times", len(batch.target_times))
-#    print("len target times[0]", len(batch.target_times[0]))
-#    print("len target times[1]", len(batch.target_times[1]))
-#    print("target times[0]", batch.target_times[0])
-#    print("target_types:", batch.target_types)
-#    print("target_dt:", batch.target_dt)
-#    print("target_onehots:", batch.target_onehots)
-#    print("unnormed_history_dt:", batch.unnormed_history_dt)
-#    print("len unnormed_history_dt:", len(batch.unnormed_history_dt))
-#    print("unnormed_history_dt[0]:", batch.unnormed_history_dt[0])
-    print("unnormed_history_dt[1]:", batch.unnormed_history_dt[1])
-#    print("unnormed_target_dt:", batch.unnormed_target_dt)
-#    print("unnormed_target_dt[0]:", batch.unnormed_target_dt[0])
-    print("unnormed_target_dt[1]:", batch.unnormed_target_dt[1])
-#    print("seq_lengths:", batch.seq_lengths)
-#    print("Min seq:", min(batch.seq_lengths))
-#    print("Max seq:", max(batch.seq_lengths))
-    
-
-
-#    print("len(test):", len(test_loader))
-    #print("len(test[0]):", len(test_loader[0]))
-    #print("len(test[0][0]):", len(test_loader[0][0]))
-    #print("Sample test[0][0]:", test[0][0])
-    #print("Sample test[0]:", test[0])
-
-
-
 
     args.validation = True
 
@@ -262,11 +185,6 @@ def run_eval(args):
     model = get_model(args, num_classes=num_classes)
     ## ADDED BY ME
     checkpoint = torch.load(path_check, weights_only=False)
-    #checkpoint = torch.load("/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt", weights_only=False)
-    #checkpoint = torch.load("/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt", weights_only=False)
-    #checkpoint = torch.load("/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_ln_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt", weights_only=False)
-    #checkpoint = torch.load("/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_ln_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt", weights_only=False)
-
 
     model.load_state_dict(checkpoint['model'])
     print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
@@ -284,10 +202,10 @@ def run_eval(args):
         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
                                 )
 
-    #if not os.path.exists(os.path.dirname(path_samples)):
-    #    os.mkdir(os.path.dirname(path_samples))
+    if not os.path.exists(os.path.dirname(path_samples)):
+        os.mkdir(os.path.dirname(path_samples))
 
-    #args.path_samples = path_samples
+    args.path_samples = path_samples
 
     ############## Result log ##############
 
@@ -295,10 +213,10 @@ def run_eval(args):
         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
                                        )
 
-    #if not os.path.exists(os.path.dirname(path_samples_result)):
-    #    os.mkdir(os.path.dirname(path_samples_result))
+    if not os.path.exists(os.path.dirname(path_samples_result)):
+        os.mkdir(os.path.dirname(path_samples_result))
 
-    #args.path_samples_result = path_samples_result
+    args.path_samples_result = path_samples_result
 
     ############## dt Samples Saving Path ##############
 
@@ -444,15 +362,15 @@ def run_eval(args):
     ############################################ Save Samples ############################################
     ######################################################################################################
 
-    #torch.save(pred_x, path_samples_dt)
-    #torch.save(pred_e_copy.cpu(), path_samples_type)
+    torch.save(pred_x, path_samples_dt)
+    torch.save(pred_e_copy.cpu(), path_samples_type)
 
     ###########################################################################################################
     ############################################ Save Ground Truth ############################################
     ###########################################################################################################
 
-    #torch.save(gt_x, path_gt_dt)
-    #torch.save(gt_e, path_gt_type)
+    torch.save(gt_x, path_gt_dt)
+    torch.save(gt_e, path_gt_type)
 
     ######################################################################################################
     ############################################ Take Average ############################################
@@ -553,38 +471,42 @@ def run_eval(args):
     print('Number of samples per sequence: {}'.format(num_samples))
 
     ## ADDED BY ME:
-    print("MAPE MEAN", mape_mean)
-    print("MAPE STD", mape_std)
-    print("SMAPE MEAN", smape_mean)
-    print("SMAPE STD", smape_std)
+    print("MAPE MEAN")
+    print(mape_mean)
+    print("MAPE STD")
+    print(mape_std)
+    print("SMAPE MEAN")
+    print(smape_mean) 
+    print("SMAPE STD")
+    print(smape_std)
 
-    #with open(path_samples_result, 'w') as f:
-    #    f.write('distance (fixed forecasting): {:.3f}\n'.format(
-    #        distances_wo_filter.mean())
-    #    )
-#
-#        f.write('rmse type (fixed forecasting): {:.3f}\n'.format(
-#            rmse_types_wo_filter.mean())
-#        )
-#
-#        f.write('distance (interval forecasting): {:.3f}\n'.format(
-#            distances_with_filter.mean())
-#        )
-#
-#        f.write('rmse type (interval forecasting): {:.3f}\n'.format(
-#            rmse_types_with_filter.mean())
-#        )
-#
-#        f.write('rmse # of events: {: .3f}\n'.format(rmse_num_events))
-#        f.write('mae # of events: {: .3f}\n'.format(mae_num_events))
-#
-#        f.write('rmse time: {:.3f}\n'.format(rmse_mean))
-#
-#        f.write('total sampling time: {total_time: .3f}s\n'.format(total_time=total_sampling_time))
-#        f.write('Number of total samples: {}\n'.format(pred_e_copy.flatten().size(0)))
-#        f.write('Number of samples per sequence: {}\n'.format(num_samples))
-#        f.write('Num of training parameters: {}\n'.format(total_trainable_params))
-#
-    #save_args(args)
+    with open(path_samples_result, 'w') as f:
+        f.write('distance (fixed forecasting): {:.3f}\n'.format(
+            distances_wo_filter.mean())
+        )
+
+        f.write('rmse type (fixed forecasting): {:.3f}\n'.format(
+            rmse_types_wo_filter.mean())
+        )
+
+        f.write('distance (interval forecasting): {:.3f}\n'.format(
+            distances_with_filter.mean())
+        )
+
+        f.write('rmse type (interval forecasting): {:.3f}\n'.format(
+            rmse_types_with_filter.mean())
+        )
+
+        f.write('rmse # of events: {: .3f}\n'.format(rmse_num_events))
+        f.write('mae # of events: {: .3f}\n'.format(mae_num_events))
+
+        f.write('rmse time: {:.3f}\n'.format(rmse_mean))
+
+        f.write('total sampling time: {total_time: .3f}s\n'.format(total_time=total_sampling_time))
+        f.write('Number of total samples: {}\n'.format(pred_e_copy.flatten().size(0)))
+        f.write('Number of samples per sequence: {}\n'.format(num_samples))
+        f.write('Num of training parameters: {}\n'.format(total_trainable_params))
+
+    save_args(args)
 
     return args
