@@ -621,6 +621,6 @@ def run_eval(args):
 #        f.write('Number of samples per sequence: {}\n'.format(num_samples))
 #        f.write('Num of training parameters: {}\n'.format(total_trainable_params))
 #
-    save_args(args)
+#    save_args(args)
 
     return args
