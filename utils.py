@@ -134,10 +134,10 @@ def run_eval(args):
 
     ## CHANGED BY ME:
     #path_args = '{}/args.pickle'.format(args.log_path)
-    path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/args.pickle'
+    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/args.pickle'
     
     #path_check = '{}/check/checkpoint.pt'.format(args.log_path)
-    path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
+    path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
 
     with open(path_args, 'rb') as f:
         args = pickle.load(f)
@@ -259,69 +259,84 @@ def run_eval(args):
 
     ############## Saving base ##############
 
-    path_samples = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}'.format(
-        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-                                )
+    #path_samples = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}'.format(
+    #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+    #                            )
+    path_samples = "./nullsamples"
 
     #if not os.path.exists(os.path.dirname(path_samples)):
     #    os.mkdir(os.path.dirname(path_samples))
 
-    #args.path_samples = path_samples
+    args.path_samples = path_samples
 
     ############## Result log ##############
 
-    path_samples_result = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/result.txt'.format(
-        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-                                       )
+    #path_samples_result = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/result.txt'.format(
+    #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+#                                       )
+    path_samples_result = "./nullsamples/result.txt"
 
     #if not os.path.exists(os.path.dirname(path_samples_result)):
     #    os.mkdir(os.path.dirname(path_samples_result))
 
-    #args.path_samples_result = path_samples_result
+    args.path_samples_result = path_samples_result
 
     ############## dt Samples Saving Path ##############
 
-    path_samples_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_dt.pt'.format(
-        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-                                   )
+    #path_samples_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_dt.pt'.format(
+    #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+    #                               )
+    
+    path_samples_dt = "./nullsamples/samples_dt.pt"
 
     args.path_samples_dt = path_samples_dt
 
-    path_samples_chain_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_chain_dt.pt'.format(
-        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-                                   )
+#    path_samples_chain_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_chain_dt.pt'.format(
+#        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)     
+#                              )
+    
+    path_samples_chain_dt = "./nullsamples/samples_chain_dt.pt"
+
     args.path_samples_chain_dt = path_samples_chain_dt
 
     ############## type Samples Saving Path ##############
 
-    path_samples_type = os.path.join(args.log_path,
-                                     'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_type.pt'.format(
-                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-                                     )
+    #path_samples_type = os.path.join(args.log_path,
+#                                     'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_type.pt'.format(
+#                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+#                                     )
+    
+    path_samples_type = "./nullsamples/samples_type.pt"
+
 
     args.path_samples_type = path_samples_type
 
-    path_samples_chain_type = os.path.join(args.log_path,
-                                     'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_type.pt'.format(
-                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-                                     )
+#    path_samples_chain_type = os.path.join(args.log_path,
+#                                     'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_type.pt'.format(
+#                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+#                                     )
+
+    
+    path_samples_chain_type = "./nullsamples/samples_type.pt"
 
     args.path_samples_chain_type = path_samples_chain_type
 
     ############## dt ground truth Saving Path ##############
 
-    path_gt_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/gt_dt.pt'.format(
-        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-                              )
-
+#    path_gt_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/gt_dt.pt'.format(
+#        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+#                              )
+    
+    path_samples_result = "./nullsamples/gt_dt.pt"
     args.path_gt_dt = path_gt_dt
 
     ############## type ground truth Saving Path ##############
 
-    path_gt_type = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/gt_type.pt'.format(
-        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-                                )
+#    path_gt_type = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/gt_type.pt'.format(
+#        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+#                                )
 
+    path_samples_result = "./nullsamples/gt_type.pt"
     args.path_gt_type = path_gt_type
 
     ####################################################################################
@@ -384,6 +399,7 @@ def run_eval(args):
                     print("Before boxcox:")
                     ## LENGTH 500 P_E AND P_X GENERATED
                     print("First sequence:")
+                    print(len(p_e), len(p_x), "lengths")
                     print("Predicted events: \n",p_e[0])
                     print("Predicted timestamps: \n",p_x[0])
                     #print()
@@ -464,15 +480,15 @@ def run_eval(args):
     ############################################ Save Samples ############################################
     ######################################################################################################
 
-    #torch.save(pred_x, path_samples_dt)
-    #torch.save(pred_e_copy.cpu(), path_samples_type)
+    torch.save(pred_x, path_samples_dt)
+    torch.save(pred_e_copy.cpu(), path_samples_type)
 
     ###########################################################################################################
     ############################################ Save Ground Truth ############################################
     ###########################################################################################################
 
-    #torch.save(gt_x, path_gt_dt)
-    #torch.save(gt_e, path_gt_type)
+    torch.save(gt_x, path_gt_dt)
+    torch.save(gt_e, path_gt_type)
 
     ######################################################################################################
     ############################################ Take Average ############################################
@@ -605,6 +621,6 @@ def run_eval(args):
 #        f.write('Number of samples per sequence: {}\n'.format(num_samples))
 #        f.write('Num of training parameters: {}\n'.format(total_trainable_params))
 #
-    #save_args(args)
+    save_args(args)
 
     return args
