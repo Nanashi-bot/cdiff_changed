@@ -327,7 +327,7 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                              )
     
-    path_samples_result = "./nullsamples/gt_dt.pt"
+    path_gt_dt = "./nullsamples/gt_dt.pt"
     args.path_gt_dt = path_gt_dt
 
     ############## type ground truth Saving Path ##############
@@ -336,7 +336,7 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                )
 
-    path_samples_result = "./nullsamples/gt_type.pt"
+    path_gt_type = "./nullsamples/gt_type.pt"
     args.path_gt_type = path_gt_type
 
     ####################################################################################
