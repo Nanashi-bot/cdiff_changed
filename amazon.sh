@@ -8,7 +8,7 @@ python3 main.py --batch_size 1024\
         --gamma 0.99\
        	--log_home .\
        	--dataset amazon\
-       	--dataset_dir /home/aditya-mainak/event_prediction/cdiff/data/amazon\
+       	--dataset_dir ./data/amazon\
        	--transformer_dim 32\
        	--transformer_heads 2\
        	--num_encoder_layers 1\
