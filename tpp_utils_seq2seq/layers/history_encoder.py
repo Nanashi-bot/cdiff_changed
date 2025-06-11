@@ -75,6 +75,11 @@ class HistoryEncoder(nn.Module):
         :return: memory: history_representation, B x L' x dim
         """
         non_pad_mask_temporal_enc = (non_pad_mask.type(torch.float).unsqueeze(-1) - 1) * (-1)
+
+
+        #print("hist_x shape",hist_x.shape)
+        #print("hist_time_stamps",hist_time_stamps.shape)
+
         hist_dt_encoding = self.temporal_enc(hist_x, non_pad_mask_temporal_enc)
         hist_time_stamps_encoding = self.temporal_enc(hist_time_stamps, non_pad_mask_temporal_enc)
         hist_dt_encoding = hist_dt_encoding + hist_time_stamps_encoding
@@ -115,6 +120,11 @@ class HistoryEncoder(nn.Module):
         result = dt_seq.unsqueeze(-1) / self.position_vec
         result[:, :, 0::2] = torch.sin(result[:, :, 0::2])
         result[:, :, 1::2] = torch.cos(result[:, :, 1::2])
+
+        #print(dt_seq.shape)  # should be [batch, 72]
+        #print("After unsqueeze:", dt_seq.unsqueeze(-1).shape)  # should be [batch, 72, 1]
+
+
         return result * non_pad_mask
 
     def generate_square_subsequent_mask(self, sz):
