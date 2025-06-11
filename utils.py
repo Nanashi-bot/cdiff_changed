@@ -262,7 +262,7 @@ def run_eval(args):
     #path_samples = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}'.format(
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
     #                            )
-    path_samples = "./nullsamples"
+    path_samples = "./nullsamples/random16/"
 
     #if not os.path.exists(os.path.dirname(path_samples)):
     #    os.mkdir(os.path.dirname(path_samples))
@@ -274,7 +274,7 @@ def run_eval(args):
     #path_samples_result = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/result.txt'.format(
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                       )
-    path_samples_result = "./nullsamples/result.txt"
+    path_samples_result = "./nullsamples/random16/result.txt"
 
     #if not os.path.exists(os.path.dirname(path_samples_result)):
     #    os.mkdir(os.path.dirname(path_samples_result))
@@ -287,7 +287,7 @@ def run_eval(args):
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
     #                               )
     
-    path_samples_dt = "./nullsamples/samples_dt.pt"
+    path_samples_dt = "./nullsamples/random16/samples_dt.pt"
 
     args.path_samples_dt = path_samples_dt
 
@@ -295,7 +295,7 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)     
 #                              )
     
-    path_samples_chain_dt = "./nullsamples/samples_chain_dt.pt"
+    path_samples_chain_dt = "./nullsamples/random16/samples_chain_dt.pt"
 
     args.path_samples_chain_dt = path_samples_chain_dt
 
@@ -306,7 +306,7 @@ def run_eval(args):
 #                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                     )
     
-    path_samples_type = "./nullsamples/samples_type.pt"
+    path_samples_type = "./nullsamples/random16/samples_type.pt"
 
 
     args.path_samples_type = path_samples_type
@@ -317,7 +317,7 @@ def run_eval(args):
 #                                     )
 
     
-    path_samples_chain_type = "./nullsamples/samples_type.pt"
+    path_samples_chain_type = "./nullsamples/random16/samples_type.pt"
 
     args.path_samples_chain_type = path_samples_chain_type
 
@@ -327,7 +327,7 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                              )
     
-    path_gt_dt = "./nullsamples/gt_dt.pt"
+    path_gt_dt = "./nullsamples/random16/gt_dt.pt"
     args.path_gt_dt = path_gt_dt
 
     ############## type ground truth Saving Path ##############
@@ -336,7 +336,7 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                )
 
-    path_gt_type = "./nullsamples/gt_type.pt"
+    path_gt_type = "./nullsamples/random16/gt_type.pt"
     args.path_gt_type = path_gt_type
 
     ####################################################################################
