@@ -161,7 +161,7 @@ def get_data(args):
             args.time_range = 6.5/2
         if args.tgt_len == 10:
             #args.time_range = 6.5/2
-            args.time_range = 6.5/2/3
+            args.time_range = 6.5/3
         if args.tgt_len == 5:
             #args.time_range = 6.5/4
             args.time_range = 6.5/4

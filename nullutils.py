@@ -387,10 +387,10 @@ def run_eval(args):
 
                     ### GIVING NULL CONTEXT FOR SAMPLING:
                 hist_x[:] = 0
-                hist_e[:] = 16    # 16 because there are 15 events in amazon dataset
+                hist_e[:] = 16    # randomise 0-16
                 history_times[:] = 0
 
-                p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
+                p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)  # change to max sequence length length
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
                 pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
 

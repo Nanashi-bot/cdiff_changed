@@ -54,3 +54,20 @@ for i in range(10):
 
     print("\n\n")
 
+
+import torch
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+gt_arrival = torch.cumsum(gt_dt1, dim=1).flatten().tolist()
+pred_arrival = torch.cumsum(pred_x1, dim=1).flatten().tolist()
+sns.kdeplot(gt_arrival, label="Ground Truth", bw_adjust=1)
+sns.kdeplot(pred_arrival, label="Predicted", bw_adjust=1)
+
+plt.xlabel("Arrival Time")
+plt.ylabel("Density")
+plt.title("Arrival Time Distributions")
+plt.legend()
+plt.show()
+
