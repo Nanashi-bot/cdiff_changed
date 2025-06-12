@@ -26,6 +26,10 @@ class Experiment(DiffusionExperiment):
             hist_x = batch.history_dt
             tgt_e = batch.target_types.long()
             tgt_x = batch.target_dt
+
+            ## CHANGED BY ME:
+#            print(hist_x.shape, hist_e.shape, tgt_x.shape, tgt_e.shape, history_times.shape)
+
             loss, dt_loss, type_loss = self.model(hist_x, hist_e, tgt_x, tgt_e, history_times)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.)

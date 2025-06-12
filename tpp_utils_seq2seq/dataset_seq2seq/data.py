@@ -116,6 +116,9 @@ def get_data(args):
 
     if args.dataset == 'amazon':
         args.num_classes = 16
+        ## ADDED BY ME
+        if args.tgt_len == 90:
+            args.time_range = 53.6
         if args.tgt_len == 25:
             args.time_range = 13
         if args.tgt_len == 20:

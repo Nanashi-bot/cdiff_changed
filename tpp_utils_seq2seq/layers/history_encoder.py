@@ -92,6 +92,9 @@ class HistoryEncoder(nn.Module):
 
         src_mask = self.generate_square_subsequent_mask(hist_e.size(1)).to(src.device)
         src_key_padding_mask = non_pad_mask
+
+        ## ERROR HERE
+#        print(src.shape, src_mask.shape, src_key_padding_mask.shape)
         memory = self.encoder(src, mask=src_mask, src_key_padding_mask=src_key_padding_mask)
         memory = memory.permute(1, 0, -1)
 
