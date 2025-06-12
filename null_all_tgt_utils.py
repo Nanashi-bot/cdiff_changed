@@ -78,7 +78,6 @@ def run_train(args):
     ## Specify data ##
     ##################
 
-    print("args.boxcox", args.boxcox)
     train_loader, eval_loader, data_shape, num_classes = get_data(args)
     data_id = get_data_id(args)
 
@@ -134,12 +133,15 @@ def run_eval(args):
 
     ## CHANGED BY ME:
     #path_args = '{}/args.pickle'.format(args.log_path)
-    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/args.pickle'
+    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
+   # path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/args.pickle'
     
     #path_check = '{}/check/checkpoint.pt'.format(args.log_path)
-    path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
+    path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/check/checkpoint.pt'
+    #path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
 
     with open(path_args, 'rb') as f:
+        print(path_args)
         args = pickle.load(f)
 
     assert args.tgt_len is not None, 'Currently, length has to be specified.'
@@ -160,7 +162,7 @@ def run_eval(args):
     args.trans_cost = trans_cost
 
     ### ADDED BY ME:
-    args.tgt_len = 72
+#    args.tgt_len = 88
 
     ###################################################
     ################## Load dataset ###################
@@ -174,8 +176,6 @@ def run_eval(args):
         train_loader, train = load_dataset_ln(dataset_dir=args.dataset_dir, mode='train',
                                               device=args.device, data_name=args.dataset, target_length=args.tgt_len)
 
-    #print("train_loader type:", type(train_loader))
-    #print("train type:", type(train))
     std_inter_time = train.std_inter_time
     mean_inter_time = train.mean_inter_time
     min_inter_time = train.min_inter_time
@@ -265,7 +265,7 @@ def run_eval(args):
     #path_samples = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}'.format(
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
     #                            )
-    path_samples = "./nullsamples/random16/"
+    path_samples = "./nullsamples/random88/"
 
     #if not os.path.exists(os.path.dirname(path_samples)):
     #    os.mkdir(os.path.dirname(path_samples))
@@ -277,7 +277,7 @@ def run_eval(args):
     #path_samples_result = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/result.txt'.format(
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                       )
-    path_samples_result = "./nullsamples/random16/result.txt"
+    path_samples_result = "./nullsamples/random88/result.txt"
 
     #if not os.path.exists(os.path.dirname(path_samples_result)):
     #    os.mkdir(os.path.dirname(path_samples_result))
@@ -290,7 +290,7 @@ def run_eval(args):
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
     #                               )
     
-    path_samples_dt = "./nullsamples/random16/samples_dt.pt"
+    path_samples_dt = "./nullsamples/random88/samples_dt.pt"
 
     args.path_samples_dt = path_samples_dt
 
@@ -298,7 +298,7 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)     
 #                              )
     
-    path_samples_chain_dt = "./nullsamples/random16/samples_chain_dt.pt"
+    path_samples_chain_dt = "./nullsamples/random88/samples_chain_dt.pt"
 
     args.path_samples_chain_dt = path_samples_chain_dt
 
@@ -309,7 +309,7 @@ def run_eval(args):
 #                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                     )
     
-    path_samples_type = "./nullsamples/random16/samples_type.pt"
+    path_samples_type = "./nullsamples/random88/samples_type.pt"
 
 
     args.path_samples_type = path_samples_type
@@ -320,7 +320,7 @@ def run_eval(args):
 #                                     )
 
     
-    path_samples_chain_type = "./nullsamples/random16/samples_type.pt"
+    path_samples_chain_type = "./nullsamples/random88/samples_type.pt"
 
     args.path_samples_chain_type = path_samples_chain_type
 
@@ -330,7 +330,7 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                              )
     
-    path_gt_dt = "./nullsamples/random16/gt_dt.pt"
+    path_gt_dt = "./nullsamples/random88/gt_dt.pt"
     args.path_gt_dt = path_gt_dt
 
     ############## type ground truth Saving Path ##############
@@ -339,7 +339,7 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                )
 
-    path_gt_type = "./nullsamples/random16/gt_type.pt"
+    path_gt_type = "./nullsamples/random88/gt_type.pt"
     args.path_gt_type = path_gt_type
 
     ####################################################################################
@@ -390,12 +390,12 @@ def run_eval(args):
 
                     ### GIVING NULL CONTEXT FOR SAMPLING:
 #                hist_x[:] = 0
-                hist_x = torch.zeros(500, 72).to('cuda')
+                hist_x = torch.zeros(500, 88).to('cuda')
                 #print(hist_e.shape)
-                hist_e = torch.randint(0, 17, (500, 72)).to('cuda')
+                hist_e = torch.randint(0, 17, (500, 88)).to('cuda')
 #                hist_e[:] = 16    # randomise 0-16
                 #history_times[:] = 0
-                history_times = torch.zeros(500, 72).to('cuda')
+                history_times = torch.zeros(500, 88).to('cuda')
 
                 p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)  # change to max sequence length length
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)

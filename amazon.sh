@@ -17,5 +17,5 @@ python3 main.py --batch_size 1024\
        	--scheduler cosanneal\
        	--num_samples 1\
         --boxcox \
-       	--tgt_len 90\
+       	--tgt_len 88\
        	--seed 1
