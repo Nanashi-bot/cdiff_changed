@@ -192,9 +192,9 @@ def run_eval(args):
     #print("Sample train[0]:", train[0])
 
 #    batch = next(iter(train_loader))
-#    batch = next(iter(test_loader))
+    batch = next(iter(test_loader))
 
-#    print("Num of sequences:",len(batch.seq_lengths))
+    print("Num of sequences:",len(batch.seq_lengths))
 #    print("history_times:", batch.history_times)
 #    print("len history times", len(batch.history_times))
 #    print("len history times[0]", len(batch.history_times[0]))
