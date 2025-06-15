@@ -11,7 +11,7 @@ from collections import Counter
 
 # THE FOLLOWING ARE FOR WHEN SEQUENCE IS STARTED FROM SECOND VALUE NOT FIRST
 #base_path = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/samples/sample_ep900_s1_num_s_7_num_steps_200/'
-base_path  = './nullsamples/retweet72/'
+base_path  = './nullsamples/amazon88/'
 gt_dt1 = torch.load(os.path.join(base_path, 'gt_dt.pt'))
 gt_type1 = torch.load(os.path.join(base_path, 'gt_type.pt'))
 samples_dt1 = torch.load(os.path.join(base_path, 'samples_dt.pt'))
@@ -106,31 +106,30 @@ def arrival_time_visual(ax=None):
     ax.set_title("Arrival Time Distributions")
     ax.legend()
 
-
 def seq_len_visual(ax=None):
-    freq_gt = Counter(gt_seq_len)
-    freq_pred = Counter(pred_seq_len)
-    
-    keys = sorted(set(freq_gt.keys()).union(freq_pred.keys()))
+    freq_gt, freq_pred = Counter(gt_seq_len), Counter(pred_seq_len)
+    keys = sorted(set(freq_gt) | set(freq_pred))
     values_gt = [freq_gt.get(k, 0) for k in keys]
     values_pred = [freq_pred.get(k, 0) for k in keys]
-    
+
     x = range(len(keys))
-    bar_width = 0.35
+    width = 1.0
 
     if ax is None:
-        ax = plt.gca()
-    
-    ax.bar([i - bar_width/2 for i in x], values_gt, width=bar_width, label='Ground truth', color='blue')
-    ax.bar([i + bar_width/2 for i in x], values_pred, width=bar_width, label='Generated', color='orange')
-    
-    ax.set_xticks(x)
-    ax.set_xticklabels(keys)
+        fig, ax = plt.subplots()
+
+    ax.bar(x, values_gt, width=width, alpha=0.6, label='Ground truth', color='blue')
+    ax.bar(x, values_pred, width=width, alpha=0.4, label='Generated', color='orange')
+
+    tick_idx = [i for i, k in enumerate(keys) if k % 5 == 0]
+    ax.set_xticks(tick_idx)
+    ax.set_xticklabels([keys[i] for i in tick_idx])
+
     ax.set_xlabel('Sequence Length')
     ax.set_ylabel('Frequency')
     ax.set_title('Sequence Length Distribution')
-    ax.legend()
     ax.grid(axis='y', linestyle='--', alpha=0.6)
+    ax.legend()
 
 
 def type_visualise(ax=None):
@@ -179,7 +178,9 @@ def plot_all(arrival=True, seq_len=True, types=True):
     if types:
         type_visualise(ax=axs[i])
     
-    plt.tight_layout()
+    #plt.tight_layout()
+    plt.tight_layout(pad=3.5)
+
     plt.show()
 
 plot_all(arrival=True, seq_len=True, types=True)
