@@ -11,7 +11,7 @@ from collections import Counter
 
 # THE FOLLOWING ARE FOR WHEN SEQUENCE IS STARTED FROM SECOND VALUE NOT FIRST
 #base_path = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/samples/sample_ep900_s1_num_s_7_num_steps_200/'
-base_path  = './nullsamples/random88'
+base_path  = './nullsamples/retweet72/'
 gt_dt1 = torch.load(os.path.join(base_path, 'gt_dt.pt'))
 gt_type1 = torch.load(os.path.join(base_path, 'gt_type.pt'))
 samples_dt1 = torch.load(os.path.join(base_path, 'samples_dt.pt'))
@@ -52,7 +52,7 @@ pred_seq_len = []
 gt_types = []
 pred_types = []
 # Total 500
-for i in range(500):
+for i in range(401):
 
     print(f"###### FOR SEQUENCE {i+1}: ######\n")
 
@@ -182,7 +182,7 @@ def plot_all(arrival=True, seq_len=True, types=True):
     plt.tight_layout()
     plt.show()
 
-plot_all(arrival=False, seq_len=False, types=True)
+plot_all(arrival=True, seq_len=True, types=True)
 
 def bigram_matrix(seqs):
     pair_counter = Counter()
@@ -201,27 +201,27 @@ def build_matrix(counter, event_types):
         mat[idx_map[a], idx_map[b]] = count
     return mat
 
-# Construct bigram counts
-count_gt = bigram_matrix(gt_types)
-count_pred = bigram_matrix(pred_types)
-
-# Unified event types
-event_types = get_event_types(gt_types, pred_types)
-
-# Build transition matrices
-mat_gt = build_matrix(count_gt, event_types)
-mat_pred = build_matrix(count_pred, event_types)
-
-# Plot side-by-side
-fig, axes = plt.subplots(1, 2, figsize=(16, 7), sharey=True)
-sns.heatmap(mat_gt, annot=False, fmt='d', xticklabels=event_types, yticklabels=event_types, cmap="Blues", ax=axes[0])
-axes[0].set_title("Ground Truth Transition")
-axes[0].set_xlabel("Next Event")
-axes[0].set_ylabel("Current Event")
-
-sns.heatmap(mat_pred, annot=False, fmt='d', xticklabels=event_types, yticklabels=event_types, cmap="Oranges", ax=axes[1])
-axes[1].set_title("Predicted Transition")
-axes[1].set_xlabel("Next Event")
-
-plt.tight_layout()
-plt.show()
+## Construct bigram counts
+#count_gt = bigram_matrix(gt_types)
+#count_pred = bigram_matrix(pred_types)
+#
+## Unified event types
+#event_types = get_event_types(gt_types, pred_types)
+#
+## Build transition matrices
+#mat_gt = build_matrix(count_gt, event_types)
+#mat_pred = build_matrix(count_pred, event_types)
+#
+## Plot side-by-side
+#fig, axes = plt.subplots(1, 2, figsize=(16, 7), sharey=True)
+#sns.heatmap(mat_gt, annot=False, fmt='d', xticklabels=event_types, yticklabels=event_types, cmap="Blues", ax=axes[0])
+#axes[0].set_title("Ground Truth Transition")
+#axes[0].set_xlabel("Next Event")
+#axes[0].set_ylabel("Current Event")
+#
+#sns.heatmap(mat_pred, annot=False, fmt='d', xticklabels=event_types, yticklabels=event_types, cmap="Oranges", ax=axes[1])
+#axes[1].set_title("Predicted Transition")
+#axes[1].set_xlabel("Next Event")
+#
+#plt.tight_layout()
+#plt.show()
