@@ -129,8 +129,9 @@ def get_data(args):
             args.time_range = 4
 
 
-    if args.dataset == 'stackoverflow':
+    if args.dataset == 'stackoverflow':   # MAX LENGTH 101, 95 PERCENTILE IS 1388 TAKE 98 SEQ PREDICTION
         args.num_classes = 22
+        args.time_range = 1388
         if args.tgt_len == 25:
             args.time_range = 13
         if args.tgt_len == 20:
@@ -140,8 +141,9 @@ def get_data(args):
         if args.tgt_len == 5:
             args.time_range = 20/4
     # Dataset
-    if args.dataset == 'taxi':
+    if args.dataset == 'taxi':     # MAX LENGTH 38 95 PERCENTILE IS 10.95 TAKE 36 SEQ PREDICTION
         args.num_classes = 10
+        args.time_range = 10.95
         # args.time_range = 4.5
         if args.tgt_len == 25:
             args.time_range = 4.5
@@ -153,8 +155,16 @@ def get_data(args):
             args.time_range = 4.5/4
 
             ## CHANGED BY ME
-    if args.dataset == 'taobao':
+    if args.dataset == 'taobao':     # MAX LENGTH 64 95 PERCENTILE IS 151231 TAKE 62 SEQ PREDICTION
+#Traceback (most recent call last):
+#  File "/home/aditya/github/cdiff_changed/main.py", line 6, in <module>
+#    args = run_eval(args)
+#           ^^^^^^^^^^^^^^
+#  File "/home/aditya/github/cdiff_changed/utils.py", line 478, in run_eval
+#
+#OverflowError: cannot convert float infinity to integer
         args.num_classes = 17
+        args.time_range = 151231
         if args.tgt_len == 25:
             #args.time_range = 6.5/3
             args.time_range = 6.5
@@ -179,8 +189,10 @@ def get_data(args):
             args.time_range = 2/2
         if args.tgt_len == 5:
             args.time_range = 2/4
-    if args.dataset == 'retweet':
+    if args.dataset == 'retweet':     # MAX LENGTH 97, 95 PERCENTILE IS 1158 TAKE 72 SEQ PREDICTION
         args.num_classes = 3
+        #if args.tgt_len == 94:
+        args.time_range = 1158
         if args.tgt_len == 25:
             args.time_range = 500
         if args.tgt_len == 20:

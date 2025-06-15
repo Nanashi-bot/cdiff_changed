@@ -132,12 +132,15 @@ def run_eval(args):
 
 
     ## CHANGED BY ME:
+    path_main = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41'
     #path_args = '{}/args.pickle'.format(args.log_path)
-    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
-   # path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/args.pickle'
+#    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
+    path_args = os.path.join(path_main, "args.pickle")
+    
     
     #path_check = '{}/check/checkpoint.pt'.format(args.log_path)
-    path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/check/checkpoint.pt'
+#   path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/check/checkpoint.pt'
+    path_check = os.path.join(path_main, "check/checkpoint.pt")
     #path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
 
     with open(path_args, 'rb') as f:
@@ -184,62 +187,6 @@ def run_eval(args):
 
     train_loader, test_loader, data_shape, num_classes = get_data(args)
 
-
-#    print("len(train):", len(train_loader))
-    #print("len(train[0]):", len(train_loader[0]))
-    #print("len(train[0][0]):", len(train_loader[0][0]))
-    #print("Sample train[0][0]:", train[0][0])
-    #print("Sample train[0]:", train[0])
-
-#    batch = next(iter(train_loader))
-    batch = next(iter(test_loader))
-
-    print("Num of sequences:",len(batch.seq_lengths))
-#    print("history_times:", batch.history_times)
-#    print("len history times", len(batch.history_times))
-#    print("len history times[0]", len(batch.history_times[0]))
-#    print("len history times[1]", len(batch.history_times[1]))
-#    print("history times[0]", batch.history_times[0])
-#    print("history times[1]", batch.history_times[1])
-
-
-#    print("history_types:", batch.history_types)    
-#    print("len history types", len(batch.history_types))
-#    print("len history types[0]", len(batch.history_types[0]))
-#    print("history types[0]", batch.history_types[0])
-#    print("history types[1]", batch.history_types[1])
- 
-#    print("history_dt:", batch.history_dt)
-#    print("history_dt[0]:", batch.history_dt[0])
-#    print("history_dt[1]:", batch.history_dt[1])
-#    print("target_times:", batch.target_times)
-#    print("len target times", len(batch.target_times))
-#    print("len target times[0]", len(batch.target_times[0]))
-#    print("len target times[1]", len(batch.target_times[1]))
-#    print("target times[0]", batch.target_times[0])
-#    print("target_types:", batch.target_types)
-#    print("target_dt:", batch.target_dt)
-#    print("target_onehots:", batch.target_onehots)
-#    print("unnormed_history_dt:", batch.unnormed_history_dt)
-#    print("len unnormed_history_dt:", len(batch.unnormed_history_dt))
-#    print("unnormed_history_dt[0]:", batch.unnormed_history_dt[0])
-#    print("unnormed_history_dt[1]:", batch.unnormed_history_dt[1])
-#    print("unnormed_target_dt:", batch.unnormed_target_dt)
-#    print("unnormed_target_dt[0]:", batch.unnormed_target_dt[0])
-#    print("unnormed_target_dt[1]:", batch.unnormed_target_dt[1])
-#    print("seq_lengths:", batch.seq_lengths)
-    
-
-
-#    print("len(test):", len(test_loader))
-    #print("len(test[0]):", len(test_loader[0]))
-    #print("len(test[0][0]):", len(test_loader[0][0]))
-    #print("Sample test[0][0]:", test[0][0])
-    #print("Sample test[0]:", test[0])
-
-
-
-
     args.validation = True
 
     #########################################################
@@ -277,8 +224,8 @@ def run_eval(args):
     #path_samples_result = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/result.txt'.format(
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                       )
-    path_samples_result = "./nullsamples/random88/result.txt"
-
+#    path_samples_result = "./nullsamples/random88/result.txt"
+    path_samples_result = os.path.join(path_samples, "result.txt")
     #if not os.path.exists(os.path.dirname(path_samples_result)):
     #    os.mkdir(os.path.dirname(path_samples_result))
 
@@ -290,7 +237,8 @@ def run_eval(args):
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
     #                               )
     
-    path_samples_dt = "./nullsamples/random88/samples_dt.pt"
+    path_samples_dt = os.path.join(path_samples, "samples_dt.pt")
+#    path_samples_dt = "./nullsamples/random88/samples_dt.pt"
 
     args.path_samples_dt = path_samples_dt
 
@@ -298,7 +246,8 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)     
 #                              )
     
-    path_samples_chain_dt = "./nullsamples/random88/samples_chain_dt.pt"
+    #path_samples_chain_dt = "./nullsamples/random88/samples_chain_dt.pt"
+    path_samples_chain_dt = os.path.join(path_samples, "samples_chain_dt.pt")
 
     args.path_samples_chain_dt = path_samples_chain_dt
 
@@ -309,8 +258,8 @@ def run_eval(args):
 #                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                     )
     
-    path_samples_type = "./nullsamples/random88/samples_type.pt"
-
+    #path_samples_type = "./nullsamples/random88/samples_type.pt"
+    path_samples_type = os.path.join(path_samples, "samples_type.pt")
 
     args.path_samples_type = path_samples_type
 
@@ -320,8 +269,8 @@ def run_eval(args):
 #                                     )
 
     
-    path_samples_chain_type = "./nullsamples/random88/samples_type.pt"
-
+    #path_samples_chain_type = "./nullsamples/random88/samples_type.pt"
+    path_samples_chain_type = os.path.join(path_samples, "samples_type.pt")
     args.path_samples_chain_type = path_samples_chain_type
 
     ############## dt ground truth Saving Path ##############
@@ -330,7 +279,8 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                              )
     
-    path_gt_dt = "./nullsamples/random88/gt_dt.pt"
+#    path_gt_dt = "./nullsamples/random88/gt_dt.pt"
+    path_ gt_dt = os.path.join(path_samples, "gt_dt.pt")
     args.path_gt_dt = path_gt_dt
 
     ############## type ground truth Saving Path ##############
@@ -339,7 +289,8 @@ def run_eval(args):
 #        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
 #                                )
 
-    path_gt_type = "./nullsamples/random88/gt_type.pt"
+#    path_gt_type = "./nullsamples/random88/gt_type.pt"
+    path_gt_type = os.path.join(path_samples, "gt_type.pt")
     args.path_gt_type = path_gt_type
 
     ####################################################################################

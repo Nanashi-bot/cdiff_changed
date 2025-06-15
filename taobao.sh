@@ -7,15 +7,15 @@ python3 main.py --batch_size 2048 \
 	--diffusion_steps 200 \
 	--gamma 0.99 \
 	--log_home .\
-       	--dataset taobao \
-	--dataset_dir /home/aditya-mainak/event_prediction/cdiff/data/taobao \
+  --dataset taobao \
+	--dataset_dir ./data/taobao \
 	--transformer_dim 32 \
 	--transformer_heads 2 \
 	--num_encoder_layers 1 \
 	--dim_feedforward 64 \
 	--num_decoder_layers 1 \
 	--scheduler cosanneal \
-	--num_samples 7 \
+	--num_samples 1 \
 	--boxcox \
-	--tgt_len 20 \
+	--tgt_len 62 \
 	--seed 1

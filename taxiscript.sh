@@ -8,14 +8,14 @@ python3 main.py --batch_size 128\
        	--gamma 0.99\
        	--log_home .\
        	--dataset taxi\
-       	--dataset_dir /home/aditya-mainak/event_prediction/cdiff/data/taxi\
+       	--dataset_dir ./data/taxi\
        	--transformer_dim 32\
        	--transformer_heads 2\
        	--num_encoder_layers 1\
        	--dim_feedforward 32\
        	--num_decoder_layers 1\
        	--scheduler cosanneal\
-	--num_samples 7\
+	      --num_samples 1\
        	--boxcox\
-       	--tgt_len 20\
+       	--tgt_len 36\
        	--seed 1

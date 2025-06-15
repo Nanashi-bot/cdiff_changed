@@ -305,7 +305,7 @@ def run_eval(args):
                 p_e = torch.empty(tgt_e.size(0), 0).to(device)
                 hist_x = hist_x_original.clone()
                 hist_e = hist_e_original.clone()
-                # for j in range(int(tgt_e.size(1))):
+                # Get length of batch and put it in tgt_len and find 95 percentile of last time stamp for args.time_range
                 p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
                 pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)

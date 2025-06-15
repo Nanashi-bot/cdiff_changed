@@ -1,0 +1,14 @@
+distance (fixed forecasting) mean is 180.961
+rmse type (fixed forecasting) mean is 12.275
+distance (interval forecasting) is 178.885
+rmse type (interval forecasting) mean is 12.093
+rmse # of events is  5.085
+mae # of events is  1.388
+rmse time is 23.966
+total sampling time is  3.668
+Number of total samples: 36000
+Number of samples per sequence: 1
+MAPE MEAN 48348856
+MAPE STD 34148836
+SMAPE MEAN 137
+SMAPE STD 19

@@ -1,0 +1,34 @@
+# 1000 epochs
+
+distance (fixed forecasting) mean is 209.789
+rmse type (fixed forecasting) mean is 7.963
+distance (interval forecasting) is 209.789
+rmse type (interval forecasting) mean is 7.963
+rmse # of events is  0.000
+mae # of events is  0.000
+rmse time is 2.172
+total sampling time is  7.486
+Number of total samples: 39298
+Number of samples per sequence: 1
+MAPE MEAN 3016215
+MAPE STD 2238531
+SMAPE MEAN 138
+SMAPE STD 21
+
+# 500 epochs
+
+
+distance (fixed forecasting) mean is 204.814
+rmse type (fixed forecasting) mean is 7.748
+distance (interval forecasting) is 204.814
+rmse type (interval forecasting) mean is 7.748
+rmse # of events is  0.000
+mae # of events is  0.000
+rmse time is 1.895
+total sampling time is  7.710
+Number of total samples: 39298
+Number of samples per sequence: 1
+MAPE MEAN 2934162
+MAPE STD 2114578
+SMAPE MEAN 139
+SMAPE STD 21
