@@ -8,14 +8,14 @@ python3 main.py --batch_size 1024\
        	--gamma 0.99\
        	--log_home .\
        	--dataset retweet\
-       	--dataset_dir /home/aditya-mainak/event_prediction/cdiff/data/retweet\
+       	--dataset_dir ./data/retweet\
        	--transformer_dim 32\
        	--transformer_heads 2\
        	--num_encoder_layers 1\
        	--dim_feedforward 64\
        	--num_decoder_layers 1\
        	--scheduler cosanneal\
-       	--num_samples 7\
+       	--num_samples 1\
        	--boxcox\
-       	--tgt_len 20\
+       	--tgt_len 100\
        	--seed 1
