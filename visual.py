@@ -182,4 +182,46 @@ def plot_all(arrival=True, seq_len=True, types=True):
     plt.tight_layout()
     plt.show()
 
-plot_all(arrival=True, seq_len=True, types=True)
+plot_all(arrival=False, seq_len=False, types=True)
+
+def bigram_matrix(seqs):
+    pair_counter = Counter()
+    for seq in seqs:
+        for i in range(len(seq) - 1):
+            pair_counter[(seq[i], seq[i + 1])] += 1
+    return pair_counter
+
+def get_event_types(*seq_lists):
+    return sorted(set(e for seqs in seq_lists for seq in seqs for e in seq))
+
+def build_matrix(counter, event_types):
+    idx_map = {e: i for i, e in enumerate(event_types)}
+    mat = np.zeros((len(event_types), len(event_types)), dtype=int)
+    for (a, b), count in counter.items():
+        mat[idx_map[a], idx_map[b]] = count
+    return mat
+
+# Construct bigram counts
+count_gt = bigram_matrix(gt_types)
+count_pred = bigram_matrix(pred_types)
+
+# Unified event types
+event_types = get_event_types(gt_types, pred_types)
+
+# Build transition matrices
+mat_gt = build_matrix(count_gt, event_types)
+mat_pred = build_matrix(count_pred, event_types)
+
+# Plot side-by-side
+fig, axes = plt.subplots(1, 2, figsize=(16, 7), sharey=True)
+sns.heatmap(mat_gt, annot=False, fmt='d', xticklabels=event_types, yticklabels=event_types, cmap="Blues", ax=axes[0])
+axes[0].set_title("Ground Truth Transition")
+axes[0].set_xlabel("Next Event")
+axes[0].set_ylabel("Current Event")
+
+sns.heatmap(mat_pred, annot=False, fmt='d', xticklabels=event_types, yticklabels=event_types, cmap="Oranges", ax=axes[1])
+axes[1].set_title("Predicted Transition")
+axes[1].set_xlabel("Next Event")
+
+plt.tight_layout()
+plt.show()
