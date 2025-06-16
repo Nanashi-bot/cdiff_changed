@@ -132,7 +132,7 @@ def run_eval(args):
 
 
     ## CHANGED BY ME:
-    path_main = './log/flow/stackoverflow/cross_diffusion_discrete_boxcox_200_tgt_len_98/cosanneal/epoch500/'
+    path_main = './log/flow/taobao/cross_diffusion_discrete_boxcox_200_tgt_len_62/cosanneal/2025-06-16_15-06-25/'
     #path_args = '{}/args.pickle'.format(args.log_path)
 #    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
     path_args = os.path.join(path_main, "args.pickle")
@@ -209,7 +209,7 @@ def run_eval(args):
     #path_samples = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}'.format(
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
     #                            )
-    path_samples = "./nullsamples/so98/"
+    path_samples = "./nullsamples/taobao62/"
 
     #if not os.path.exists(os.path.dirname(path_samples)):
     #    os.mkdir(os.path.dirname(path_samples))
@@ -351,6 +351,10 @@ def run_eval(args):
                     tgt = 36
                     batchsize = 500
                     num_events = 3
+                if args.dataset == 'taobao':
+                    tgt = 62
+                    batchsize = 500
+                    num_events = 17
                 hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
                 hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
                 history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
@@ -554,10 +558,10 @@ def run_eval(args):
     print('Number of samples per sequence: {}'.format(num_samples))
 
     ## ADDED BY ME:
-    print("MAPE MEAN", int(mape_mean))
-    print("MAPE STD", int(mape_std))
-    print("SMAPE MEAN", int(smape_mean))
-    print("SMAPE STD", int(smape_std))
+#    print("MAPE MEAN", int(mape_mean))
+#    print("MAPE STD", int(mape_std))
+#    print("SMAPE MEAN", int(smape_mean))
+#    print("SMAPE STD", int(smape_std))
 
     #with open(path_samples_result, 'w') as f:
     #    f.write('distance (fixed forecasting): {:.3f}\n'.format(

@@ -11,7 +11,7 @@ from collections import Counter
 
 # THE FOLLOWING ARE FOR WHEN SEQUENCE IS STARTED FROM SECOND VALUE NOT FIRST
 #base_path = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/samples/sample_ep900_s1_num_s_7_num_steps_200/'
-base_path  = './nullsamples/amazon88/'
+base_path  = './nullsamples/taobao62'
 gt_dt1 = torch.load(os.path.join(base_path, 'gt_dt.pt'))
 gt_type1 = torch.load(os.path.join(base_path, 'gt_type.pt'))
 samples_dt1 = torch.load(os.path.join(base_path, 'samples_dt.pt'))

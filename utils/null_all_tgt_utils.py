@@ -132,7 +132,7 @@ def run_eval(args):
 
 
     ## CHANGED BY ME:
-    path_main = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41'
+    path_main = './log/flow/stackoverflow/cross_diffusion_discrete_boxcox_200_tgt_len_98/cosanneal/epoch500/'
     #path_args = '{}/args.pickle'.format(args.log_path)
 #    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
     path_args = os.path.join(path_main, "args.pickle")
@@ -163,9 +163,6 @@ def run_eval(args):
     trans_cost = 1.0
     args.distance_del_cost = distance_del_cost
     args.trans_cost = trans_cost
-
-    ### ADDED BY ME:
-#    args.tgt_len = 88
 
     ###################################################
     ################## Load dataset ###################
@@ -212,7 +209,7 @@ def run_eval(args):
     #path_samples = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}'.format(
     #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
     #                            )
-    path_samples = "./nullsamples/random88/"
+    path_samples = "./nullsamples/so98/"
 
     #if not os.path.exists(os.path.dirname(path_samples)):
     #    os.mkdir(os.path.dirname(path_samples))
@@ -280,7 +277,7 @@ def run_eval(args):
 #                              )
     
 #    path_gt_dt = "./nullsamples/random88/gt_dt.pt"
-    path_ gt_dt = os.path.join(path_samples, "gt_dt.pt")
+    path_gt_dt = os.path.join(path_samples, "gt_dt.pt")
     args.path_gt_dt = path_gt_dt
 
     ############## type ground truth Saving Path ##############
@@ -337,16 +334,26 @@ def run_eval(args):
                 p_e = torch.empty(tgt_e.size(0), 0).to(device)
                 #hist_x = hist_x_original.clone()
                 #hist_e = hist_e_original.clone()
-                # for j in range(int(tgt_e.size(1))):
-
                     ### GIVING NULL CONTEXT FOR SAMPLING:
-#                hist_x[:] = 0
-                hist_x = torch.zeros(500, 88).to('cuda')
-                #print(hist_e.shape)
-                hist_e = torch.randint(0, 17, (500, 88)).to('cuda')
-#                hist_e[:] = 16    # randomise 0-16
-                #history_times[:] = 0
-                history_times = torch.zeros(500, 88).to('cuda')
+                if args.dataset == 'amazon':
+                    tgt = 88
+                    batchsize = 500
+                    num_events = 16
+                if args.dataset == 'stackoverflow':
+                    tgt = 98
+                    batchsize = 401
+                    num_events = 22
+                if args.dataset == 'taxi':
+                    tgt = 10
+                    batchsize = 128
+                    num_events = 10
+                if args.dataset == 'retweet':
+                    tgt = 36
+                    batchsize = 500
+                    num_events = 3
+                hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
+                hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
+                history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
 
                 p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)  # change to max sequence length length
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
