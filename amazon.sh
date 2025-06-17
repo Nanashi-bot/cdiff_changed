@@ -1,21 +1,21 @@
 python3 main.py --batch_size 1024\
        	--update_freq 1\
        	--lr 0.0005\
-       	--epochs 500\
+       	--epochs 1000\
        	--eval_every 50\
        	--check_every 2\
         --diffusion_steps 200\
         --gamma 0.99\
-       	--log_home ~/github/cdiff_changed/\
-       	--dataset hawkes1\
-       	--dataset_dir ~/github/cdiff_changed/data/synthetic/hawkes1/ \
+       	--log_home .\
+       	--dataset amazon\
+       	--dataset_dir ./data/amazon\
        	--transformer_dim 32\
        	--transformer_heads 2\
        	--num_encoder_layers 1\
        	--dim_feedforward 64\
         --num_decoder_layers 1\
        	--scheduler cosanneal\
-       	--num_samples 7\
+       	--num_samples 1\
         --boxcox \
-       	--tgt_len 14\
+       	--tgt_len 20 \
        	--seed 1
