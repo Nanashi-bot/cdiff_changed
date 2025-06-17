@@ -119,7 +119,7 @@ def get_data(args):
         if args.tgt_len == 14:
             args.time_range = 35
 
-    if args.dataset == 'amazon':
+    if args.dataset == 'amazon':      # MAX LENGTH 94, TAKE XX AS SEQ PREDICTION
         args.num_classes = 16
         ## ADDED BY ME
         if args.tgt_len == 88:
