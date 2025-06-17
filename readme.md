@@ -38,19 +38,19 @@ The results for the above null context generations are as follows:
 
 Amazon results: 
 ![Amazon Results](./results/amazon_88.png)
-We take a generated sequence length of 88 where 94 is the maxiumum sequence length in this dataset.
+We take a generated sequence length of 88 where 94 is the maxiumum sequence length in this dataset.   
 Retweet results:
 ![Retweet results](./results/retweet_72.png)
-We take a generated sequence length of 72 where 97 is the maxiumum sequence length in this dataset.
+We take a generated sequence length of 72 where 97 is the maxiumum sequence length in this dataset.   
 Stackoverflow results:
 ![stackoverflow results](./results/stackoverflow_98.png)
-We take a generated sequence length of 98 where 101 is the maxiumum sequence length in this dataset.
+We take a generated sequence length of 98 where 101 is the maxiumum sequence length in this dataset.   
 Taobao results:
 ![Taobao results](./results/taobao_62.png)
-We take a generated sequence length of 62 where 63 is the maxiumum sequence length in this dataset.
+We take a generated sequence length of 62 where 63 is the maxiumum sequence length in this dataset.    
 Taxi results:
 To be done.
-We take a generated sequence length of 36 where 38 is the maxiumum sequence length in this dataset.
+We take a generated sequence length of 36 where 38 is the maxiumum sequence length in this dataset.   
 
 
 ### Dependencies
