@@ -6,9 +6,9 @@ python3 main.py --batch_size 1024\
        	--check_every 2\
         --diffusion_steps 200\
         --gamma 0.99\
-       	--log_home ~/github/cdiff_changed/\
+       	--log_home .\
        	--dataset hawkes1\
-       	--dataset_dir ~/github/cdiff_changed/data/synthetic/hawkes1/ \
+       	--dataset_dir ./data/synthetic/hawkes1/ \
        	--transformer_dim 32\
        	--transformer_heads 2\
        	--num_encoder_layers 1\
@@ -17,5 +17,5 @@ python3 main.py --batch_size 1024\
        	--scheduler cosanneal\
        	--num_samples 7\
         --boxcox \
-       	--tgt_len 14\
+       	--tgt_len 20\
        	--seed 1

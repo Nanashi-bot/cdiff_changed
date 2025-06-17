@@ -210,6 +210,12 @@ class SeqDatasetBoxCox(Dataset):
         else:
             assert lmbda_boxcox != 0, 'For val and test, lmbda_boxcox should inherent from train'
             self.fitted_lambda = lmbda_boxcox
+#            print("BOXCOX LAMBDA",lmbda_boxcox)
+#        print("For mode",mode,"first seq length is:")
+#        print("UNNORMED TIME DELTA SEQ:",len(self.unnormed_time_delta_seq[0]))
+#        print("Sequence is:", self.unnormed_time_delta_seq[0])
+#        print("Time delta seq:",len(time_delta_seq))
+#        print("Time delta seq:",time_delta_seq[0])
             # self.pt = power_transformer
         for i in range(len(self.unnormed_time_delta_seq)):
             # temp = self.pt.transform(np.array([x+Constants.EPS for x in self.unnormed_time_delta_seq[i]]))
@@ -229,6 +235,10 @@ class SeqDatasetBoxCox(Dataset):
             self.boxcox_min_inter_time = train_bc_min
         for i in range(len(self.normed_time_delta_seq)):
             self.normed_time_delta_seq[i] = (self.normed_time_delta_seq[i] - self.boxcox_mean) / self.boxcox_std
+#        print("After normalising:")
+#        print(len(self.normed_time_delta_seq))
+#        print(len(self.normed_time_delta_seq[0]))
+#        print(self.normed_time_delta_seq[0])
         self.history_times = []
         self.target_times = []
         self.history_types = []

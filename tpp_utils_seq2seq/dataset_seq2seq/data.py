@@ -116,12 +116,15 @@ def get_data(args):
 
     if args.dataset == 'hawkes1':
         args.num_classes = 1
+        if args.tgt_len == 20:
+            args.time_range = 43.8
         if args.tgt_len == 14:
             args.time_range = 35
 
     if args.dataset == 'amazon':
         args.num_classes = 16
         ## ADDED BY ME
+        args.time_range = 53.6
         if args.tgt_len == 88:
             args.time_range = 53.6
         if args.tgt_len == 25:

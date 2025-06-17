@@ -391,7 +391,8 @@ def count_mae(ref_seq, decode_seq, target_type, obs_period_start=None, obs_perio
 
 
 def filter_points(ground_truth_tuple, sample_tuple, time_range):
-    # filter_max_time = ground_truth_tuple[0][0] + time_range
+    ## MAYBE FOR TAOBAO
+    #filter_max_time = ground_truth_tuple[0][0] + time_range
     filter_max_time = time_range
     horizon = len(ground_truth_tuple[0])
 
