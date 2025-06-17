@@ -52,6 +52,9 @@ Taxi results:
 To be done.
 We take a generated sequence length of 36 where 38 is the maxiumum sequence length in this dataset.   
 
+## Evaluation Process:
+I took the last arrival time in each sequence of the original and checked how many events were generated in the corresponding sequence to compare generated sequence length with the actual sequence length.
+
 
 ### Dependencies
 ```
