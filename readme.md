@@ -37,7 +37,7 @@ The folders contained in nullsamples/ are the generated sequences after taking a
 The results for the above null context generations are as follows:
 
 Amazon results: 
-![Amazon results](./results/amazon88.png)
+![Amazon Results](./results/amazon_88.png)
 We take a generated sequence length of 88 where 94 is the maxiumum sequence length in this dataset.
 Retweet results:
 ![Retweet results](./results/retweet72.png)
