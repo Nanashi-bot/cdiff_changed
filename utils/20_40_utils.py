@@ -363,6 +363,8 @@ def run_eval(args):
 #                history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
                 history_times = torch.zeros(batchsize, 72).to('cuda')
 
+                print(hist_x.shape, hist_e.shape, history_times.shape)
+                print(type(hist_x), type(hist_e), type(history_times))
                 p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
                 pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
@@ -450,18 +452,24 @@ def run_eval(args):
                 #### NEED TO NORMALISE PRED_X
                 from scipy import stats
                 fitted_lambda = 0.7373086557408398
-                scale = -1 ### CHECK THIS LATER
-                unnormed_time_delta_seq = pred_x[:20]
-                time_delta_seq = pred_x[:20]
+                # scale = -1 ### CHECK THIS LATER
+                scale = torch.tensor(22.9253, dtype=torch.float32, device='cuda')
+
+                unnormed_time_delta_seq = pred_x[:20].to('cuda')
+                time_delta_seq = pred_x[:20].to('cuda')
                 
                 for i in range(len(pred_x[:20])):
                     # time_delta_seq[i] = stats.boxcox(
                     #     [scale * (x + Constants.EPS) for x in unnormed_time_delta_seq[i]],
                     #     fitted_lambda)
-                    bc = stats.boxcox(
-                        [scale * (x + Constants.EPS) for x in unnormed_time_delta_seq[i]],
-                        fitted_lambda
-                    )
+                    # bc = stats.boxcox(
+                    #     [scale * (x + Constants.EPS) for x in unnormed_time_delta_seq[i]],
+                    #     fitted_lambda
+                    # )
+                    eps = torch.tensor(Constants.EPS, device=unnormed_time_delta_seq[i].device)
+                    seq = (scale * (unnormed_time_delta_seq[i] + eps)).cpu().numpy()
+                    bc  = stats.boxcox(seq, fitted_lambda)
+
                     time_delta_seq[i] = torch.as_tensor(bc,
                                             dtype=time_delta_seq.dtype,
                                             device=time_delta_seq.device)
@@ -480,7 +488,9 @@ def run_eval(args):
 
             hist_x, hist_e, history_times = next20(pred_e, pred_x)
 
-            p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
+            print(hist_x.shape, hist_e.shape, history_times.shape)
+            print(type(hist_x), type(hist_e), type(history_times))
+            p_e, p_x = model.sample(hist_x.to('cuda'), hist_e.to('cuda'), args.tgt_len, history_times.to('cuda'))
             pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
             pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
 #           print("Before boxcox:")

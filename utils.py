@@ -132,19 +132,15 @@ def run_eval(args):
 
 
     ## CHANGED BY ME:
-#    path_main = './log/flow/stackoverflow/cross_diffusion_discrete_boxcox_200_tgt_len_98/cosanneal/epoch500/'
     #path_args = '{}/args.pickle'.format(args.log_path)
-    path_main = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1'
-    path_args = os.path.join(path_main, "args.pickle")
-    
+    #path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/args.pickle'
+    path_args = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/args.pickle'
     
     #path_check = '{}/check/checkpoint.pt'.format(args.log_path)
-#   path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/check/checkpoint.pt'
-    path_check = os.path.join(path_main, "check/checkpoint.pt")
-    #path_check = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
+    #path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/original1000/check/checkpoint.pt'
+    path_check = '/home/aditya-mainak/event_prediction/cdiff/log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/check/checkpoint.pt'
 
     with open(path_args, 'rb') as f:
-        print(path_args)
         args = pickle.load(f)
 
     assert args.tgt_len is not None, 'Currently, length has to be specified.'
@@ -176,6 +172,8 @@ def run_eval(args):
         train_loader, train = load_dataset_ln(dataset_dir=args.dataset_dir, mode='train',
                                               device=args.device, data_name=args.dataset, target_length=args.tgt_len)
 
+    #print("train_loader type:", type(train_loader))
+    #print("train type:", type(train))
     std_inter_time = train.std_inter_time
     mean_inter_time = train.mean_inter_time
     min_inter_time = train.min_inter_time
@@ -183,6 +181,62 @@ def run_eval(args):
     args.validation = False
 
     train_loader, test_loader, data_shape, num_classes = get_data(args)
+
+
+#    print("len(train):", len(train_loader))
+    #print("len(train[0]):", len(train_loader[0]))
+    #print("len(train[0][0]):", len(train_loader[0][0]))
+    #print("Sample train[0][0]:", train[0][0])
+    #print("Sample train[0]:", train[0])
+
+#    batch = next(iter(train_loader))
+#    batch = next(iter(test_loader))
+
+#    print("Num of sequences:",len(batch.seq_lengths))
+#    print("history_times:", batch.history_times)
+#    print("len history times", len(batch.history_times))
+#    print("len history times[0]", len(batch.history_times[0]))
+#    print("len history times[1]", len(batch.history_times[1]))
+#    print("history times[0]", batch.history_times[0])
+#    print("history times[1]", batch.history_times[1])
+
+
+#    print("history_types:", batch.history_types)    
+#    print("len history types", len(batch.history_types))
+#    print("len history types[0]", len(batch.history_types[0]))
+#    print("history types[0]", batch.history_types[0])
+#    print("history types[1]", batch.history_types[1])
+ 
+#    print("history_dt:", batch.history_dt)
+#    print("history_dt[0]:", batch.history_dt[0])
+#    print("history_dt[1]:", batch.history_dt[1])
+#    print("target_times:", batch.target_times)
+#    print("len target times", len(batch.target_times))
+#    print("len target times[0]", len(batch.target_times[0]))
+#    print("len target times[1]", len(batch.target_times[1]))
+#    print("target times[0]", batch.target_times[0])
+#    print("target_types:", batch.target_types)
+#    print("target_dt:", batch.target_dt)
+#    print("target_onehots:", batch.target_onehots)
+#    print("unnormed_history_dt:", batch.unnormed_history_dt)
+#    print("len unnormed_history_dt:", len(batch.unnormed_history_dt))
+#    print("unnormed_history_dt[0]:", batch.unnormed_history_dt[0])
+#    print("unnormed_history_dt[1]:", batch.unnormed_history_dt[1])
+#    print("unnormed_target_dt:", batch.unnormed_target_dt)
+#    print("unnormed_target_dt[0]:", batch.unnormed_target_dt[0])
+#    print("unnormed_target_dt[1]:", batch.unnormed_target_dt[1])
+#    print("seq_lengths:", batch.seq_lengths)
+    
+
+
+    #print("len(test):", len(test_loader))
+    #print("len(test[0]):", len(test_loader[0]))
+    #print("len(test[0][0]):", len(test_loader[0][0]))
+    #print("Sample test[0][0]:", test[0][0])
+    #print("Sample test[0]:", test[0])
+
+
+
 
     args.validation = True
 
@@ -206,88 +260,69 @@ def run_eval(args):
 
     ############## Saving base ##############
 
-    #path_samples = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}'.format(
-    #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-    #                            )
-    path_samples = "./nullsamples/amazon20/"
+    path_samples = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}'.format(
+        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+                                )
 
     #if not os.path.exists(os.path.dirname(path_samples)):
     #    os.mkdir(os.path.dirname(path_samples))
 
-    args.path_samples = path_samples
+    #args.path_samples = path_samples
 
     ############## Result log ##############
 
-    #path_samples_result = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/result.txt'.format(
-    #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-#                                       )
-#    path_samples_result = "./nullsamples/random88/result.txt"
-    path_samples_result = os.path.join(path_samples, "result.txt")
+    path_samples_result = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/result.txt'.format(
+        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+                                       )
+
     #if not os.path.exists(os.path.dirname(path_samples_result)):
     #    os.mkdir(os.path.dirname(path_samples_result))
 
-    args.path_samples_result = path_samples_result
+    #args.path_samples_result = path_samples_result
 
     ############## dt Samples Saving Path ##############
 
-    #path_samples_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_dt.pt'.format(
-    #    checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-    #                               )
-    
-    path_samples_dt = os.path.join(path_samples, "samples_dt.pt")
-#    path_samples_dt = "./nullsamples/random88/samples_dt.pt"
+    path_samples_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_dt.pt'.format(
+        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+                                   )
 
     args.path_samples_dt = path_samples_dt
 
-#    path_samples_chain_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_chain_dt.pt'.format(
-#        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)     
-#                              )
-    
-    #path_samples_chain_dt = "./nullsamples/random88/samples_chain_dt.pt"
-    path_samples_chain_dt = os.path.join(path_samples, "samples_chain_dt.pt")
-
+    path_samples_chain_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_chain_dt.pt'.format(
+        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+                                   )
     args.path_samples_chain_dt = path_samples_chain_dt
 
     ############## type Samples Saving Path ##############
 
-    #path_samples_type = os.path.join(args.log_path,
-#                                     'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_type.pt'.format(
-#                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-#                                     )
-    
-    #path_samples_type = "./nullsamples/random88/samples_type.pt"
-    path_samples_type = os.path.join(path_samples, "samples_type.pt")
+    path_samples_type = os.path.join(args.log_path,
+                                     'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_type.pt'.format(
+                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+                                     )
 
     args.path_samples_type = path_samples_type
 
-#    path_samples_chain_type = os.path.join(args.log_path,
-#                                     'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_type.pt'.format(
-#                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-#                                     )
+    path_samples_chain_type = os.path.join(args.log_path,
+                                     'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/samples_type.pt'.format(
+                                         checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+                                     )
 
-    
-    #path_samples_chain_type = "./nullsamples/random88/samples_type.pt"
-    path_samples_chain_type = os.path.join(path_samples, "samples_type.pt")
     args.path_samples_chain_type = path_samples_chain_type
 
     ############## dt ground truth Saving Path ##############
 
-#    path_gt_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/gt_dt.pt'.format(
-#        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-#                              )
-    
-#    path_gt_dt = "./nullsamples/random88/gt_dt.pt"
-    path_gt_dt = os.path.join(path_samples, "gt_dt.pt")
+    path_gt_dt = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/gt_dt.pt'.format(
+        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+                              )
+
     args.path_gt_dt = path_gt_dt
 
     ############## type ground truth Saving Path ##############
 
-#    path_gt_type = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/gt_type.pt'.format(
-#        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
-#                                )
+    path_gt_type = os.path.join(args.log_path, 'samples/sample_ep{}_s{}_num_s_{}_num_steps_{}/gt_type.pt'.format(
+        checkpoint['current_epoch'], args.seed, args.num_samples, args.num_timesteps)
+                                )
 
-#    path_gt_type = "./nullsamples/random88/gt_type.pt"
-    path_gt_type = os.path.join(path_samples, "gt_type.pt")
     args.path_gt_type = path_gt_type
 
     ####################################################################################
@@ -304,12 +339,10 @@ def run_eval(args):
     gt_e_total = torch.empty(0, args.tgt_len).to('cpu')
     gt_x_total = torch.empty(0, args.tgt_len).to('cpu')
 
-    counter = 0
-
     with torch.no_grad():
         since = time.time()
         for iteration, batch in enumerate(test_loader):
-            ## ALL OF LENGTH 500 CONTAINING 72
+
             history_times = batch.history_times
             hist_e = batch.history_types.long()
             hist_x = batch.history_dt
@@ -332,55 +365,12 @@ def run_eval(args):
                 print("now it is sample:", i)
                 p_x = torch.empty(tgt_e.size(0), 0).to(device)
                 p_e = torch.empty(tgt_e.size(0), 0).to(device)
-                #hist_x = hist_x_original.clone()
-                #hist_e = hist_e_original.clone()
-                    ### GIVING NULL CONTEXT FOR SAMPLING:
-                if args.dataset == 'amazon':
-                    tgt = 88
-                    batchsize = 500
-                    num_events = 16
-                if args.dataset == 'stackoverflow':
-                    tgt = 98
-                    batchsize = 401
-                    num_events = 22
-                if args.dataset == 'taxi':
-                    tgt = 10
-                    batchsize = 128
-                    num_events = 10
-                if args.dataset == 'retweet':
-                    tgt = 36
-                    batchsize = 500
-                    num_events = 3
-                print("History_x:",hist_x[0])
-                # print(hist_x.shape)
-                print("History times:",history_times[0].cpu())
-                print("History_e",hist_e[0])
-                print(history_times[0].cpu())
-#                hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
-                hist_x = torch.zeros(batchsize, 72).to('cuda')
-#                hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
-                hist_e = torch.randint(0, num_events+1, (batchsize, 72)).to('cuda')
-#                history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
-                history_times = torch.zeros(batchsize, 72).to('cuda')
-
-                print(hist_x.shape, hist_e.shape, history_times.shape)
-                print(type(hist_x), type(hist_e), type(history_times))
+                hist_x = hist_x_original.clone()
+                hist_e = hist_e_original.clone()
+                # for j in range(int(tgt_e.size(1))):
                 p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
                 pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
-
-
-#                print("Before boxcox:")
-#                ## LENGTH 500 P_E AND P_X GENERATED
-#                print("First sequence:")
-#                print(len(p_e), len(p_x), "lengths")
-#                print("Predicted events: \n",p_e[0])
-#                print("Predicted timestamps: \n",p_x[0])
-#                #print()
-#                print("Second sequence:")
-#                print("Predicted events: \n",p_e[1])
-#                print("Predicted timestamps: \n",p_x[1])
-#                print("\n\n")
 
             if args.boxcox:
                 # https://stats.stackexchange.com/questions/541748/simple-problem-with-box-cox-transformation-in-a-time-series-model
@@ -394,7 +384,9 @@ def run_eval(args):
                     pred_x[
                         pred_x > -1 / args.train_lambda_boxcox] = -1 / args.train_lambda_boxcox - Constants.EPS * 1000
                 pred_x = inv_boxcox(pred_x.cpu(), args.train_lambda_boxcox) / args.scale
+                ## CHANGED BY ME
                 pred_x[pred_x < 0] = torch.tensor((args.min_inter_time + Constants.EPS) * 0.85, dtype=pred_x.dtype, device=pred_x.device)
+                #pred_x[pred_x < 0] = ((args.min_inter_time + Constants.EPS) * 0.85).to(args.device)
             else:
                 pred_x = pred_x * args.train_ln_std + args.train_ln_mean
                 pred_x = torch.exp(pred_x)
@@ -404,130 +396,14 @@ def run_eval(args):
                     pred_x = pred_x / Constants.SCALE_UNIFORM
                 pred_x[pred_x < 0] = ((args.min_inter_time + Constants.EPS) * 0.85).to(args.device)
 
+            ## CHANGED BY ME
             pred_x[pred_x < 0] = torch.tensor((min_inter_time + Constants.EPS), device=pred_x.device, dtype=pred_x.dtype)
+            #pred_x[pred_x < 0] = (min_inter_time + Constants.EPS).to(args.device)
 
             pred_x_total = torch.cat([pred_x_total, pred_x.cpu()], dim=0)
             pred_e_total = torch.cat([pred_e_total, pred_e.cpu()], dim=0)
             gt_e_total = torch.cat([gt_e_total, tgt_e.cpu()], dim=0)
             gt_x_total = torch.cat([gt_x_total, unnormed_target_dt.cpu()], dim=0)
-
-            print("After inverse boxcox:")
-            print("First sequence:")
-            print("Predicted events: \n",pred_e[0].flatten().long())
-            print("Predicted timestamps: \n",pred_x[0].flatten())
-
-            print("Ground truth events: \n",tgt_e[0])
-            print("Ground truth timestamp: \n",unnormed_target_dt[0])
-            print("\n\n")
-            print("Second sequence:")
-            print("Predicted events: \n",pred_e[1].flatten().long())
-            print("Predicted timestamps: \n",pred_x[1].flatten())
-
-            print("Ground truth events: \n",tgt_e[1])
-            print("Ground truth timestamp: \n",unnormed_target_dt[1])
-            print("\n\n")
-
-            # print("Pred e:",pred_e.shape)
-            # print("Pred x:",pred_x.shape)
-
-            def next20(pred_e, pred_x):
-                pred_e = pred_e.squeeze(-1)
-                new_pred_e = torch.zeros(pred_e.size(0), 72,
-                                    dtype=pred_e.dtype,
-                                    device=pred_e.device)
-                new_pred_e[:, :20] = pred_e
-
-                pred_x = pred_x.squeeze(-1)
-                cumsum_x = torch.cumsum(pred_x, dim=1)
-                new_history_times = torch.zeros(pred_x.size(0), 72,
-                                        dtype=pred_x.dtype,
-                                        device=pred_x.device)
-                new_history_times[:, :20] = cumsum_x
-
-                new_pred_x = torch.zeros(pred_x.size(0), 72,
-                                    dtype=pred_x.dtype,
-                                    device=pred_x.device)
-                new_pred_x[:, :20] = pred_x  
-
-                #### NEED TO NORMALISE PRED_X
-                from scipy import stats
-                fitted_lambda = 0.7373086557408398
-                scale = -1 ### CHECK THIS LATER
-                unnormed_time_delta_seq = pred_x[:20]
-                time_delta_seq = pred_x[:20]
-                
-                for i in range(len(pred_x[:20])):
-                    # time_delta_seq[i] = stats.boxcox(
-                    #     [scale * (x + Constants.EPS) for x in unnormed_time_delta_seq[i]],
-                    #     fitted_lambda)
-                    bc = stats.boxcox(
-                        [scale * (x + Constants.EPS) for x in unnormed_time_delta_seq[i]],
-                        fitted_lambda
-                    )
-                    time_delta_seq[i] = torch.as_tensor(bc,
-                                            dtype=time_delta_seq.dtype,
-                                            device=time_delta_seq.device)
-        
-
-                # normed_time_delta_seq = [torch.tensor(seq).float() for seq in time_delta_seq]
-
-                print("pred x",new_pred_x)
-                print("Pred x:",new_pred_x.shape)
-                print("Lambda:(hardcoded)",0.7373086557408398)
-                history_times =   new_history_times         # [500,72]
-                hist_e = new_pred_e                         # [500,72]
-                hist_x = new_pred_x                         # [500,72]
-            
-                return hist_x, hist_e, history_times
-
-            hist_x, hist_e, history_times = next20(pred_e, pred_x)
-
-            print(hist_x.shape, hist_e.shape, history_times.shape)
-            print(type(hist_x), type(hist_e), type(history_times))
-            p_e, p_x = model.sample(hist_x.to('cuda'), hist_e.to('cuda'), args.tgt_len, history_times.to('cuda'))
-            pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
-            pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
-#           print("Before boxcox:")
-#           ## LENGTH 500 P_E AND P_X GENERATED
-#           print("First sequence:")
-#           print(len(p_e), len(p_x), "lengths")
-#           print("Predicted events: \n",p_e[0])
-#           print("Predicted timestamps: \n",p_x[0])
-            if args.boxcox:
-
-                pred_x = pred_x * args.train_bc_std + args.train_bc_mean
-                if args.train_lambda_boxcox > 0:
-                    pred_x[
-                        pred_x < -1 / args.train_lambda_boxcox] = -1 / args.train_lambda_boxcox + Constants.EPS * 1000
-                else:
-                    pred_x[
-                        pred_x > -1 / args.train_lambda_boxcox] = -1 / args.train_lambda_boxcox - Constants.EPS * 1000
-                pred_x = inv_boxcox(pred_x.cpu(), args.train_lambda_boxcox) / args.scale
-                pred_x[pred_x < 0] = torch.tensor((args.min_inter_time + Constants.EPS) * 0.85, dtype=pred_x.dtype, device=pred_x.device)
-            else:
-                pred_x = pred_x * args.train_ln_std + args.train_ln_mean
-                pred_x = torch.exp(pred_x)
-                if args.dataset == 'retweet':
-                    pred_x = pred_x / Constants.SCALE_RETWEET
-                else:
-                    pred_x = pred_x / Constants.SCALE_UNIFORM
-                pred_x[pred_x < 0] = ((args.min_inter_time + Constants.EPS) * 0.85).to(args.device)
-
-            pred_x[pred_x < 0] = torch.tensor((min_inter_time + Constants.EPS), device=pred_x.device, dtype=pred_x.dtype)
-
-            pred_x_total = torch.cat([pred_x_total, pred_x.cpu()], dim=0)
-            pred_e_total = torch.cat([pred_e_total, pred_e.cpu()], dim=0)
-            gt_e_total = torch.cat([gt_e_total, tgt_e.cpu()], dim=0)
-            gt_x_total = torch.cat([gt_x_total, unnormed_target_dt.cpu()], dim=0)
-
-            print("After inverse boxcox:")
-            print("First sequence:")
-            print("Predicted events: \n",pred_e[0].flatten().long())
-            print("Predicted timestamps: \n",pred_x[0].flatten())
-
-            print("Ground truth events: \n",tgt_e[0])
-            print("Ground truth timestamp: \n",unnormed_target_dt[0])
-
 
     ###################################################################################################
     ########################################### Record time ###########################################
@@ -548,15 +424,15 @@ def run_eval(args):
     ############################################ Save Samples ############################################
     ######################################################################################################
 
-    torch.save(pred_x, path_samples_dt)
-    torch.save(pred_e_copy.cpu(), path_samples_type)
+    #torch.save(pred_x, path_samples_dt)
+    #torch.save(pred_e_copy.cpu(), path_samples_type)
 
     ###########################################################################################################
     ############################################ Save Ground Truth ############################################
     ###########################################################################################################
 
-    torch.save(gt_x, path_gt_dt)
-    torch.save(gt_e, path_gt_type)
+    #torch.save(gt_x, path_gt_dt)
+    #torch.save(gt_e, path_gt_type)
 
     ######################################################################################################
     ############################################ Take Average ############################################
@@ -689,6 +565,6 @@ def run_eval(args):
 #        f.write('Number of samples per sequence: {}\n'.format(num_samples))
 #        f.write('Num of training parameters: {}\n'.format(total_trainable_params))
 #
-#    save_args(args)
+    #save_args(args)
 
     return args

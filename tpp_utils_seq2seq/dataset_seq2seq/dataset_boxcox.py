@@ -210,6 +210,7 @@ class SeqDatasetBoxCox(Dataset):
         else:
             assert lmbda_boxcox != 0, 'For val and test, lmbda_boxcox should inherent from train'
             self.fitted_lambda = lmbda_boxcox
+#        print("Scale:", self.scale)
 #            print("BOXCOX LAMBDA",lmbda_boxcox)
 #        print("For mode",mode,"first seq length is:")
 #        print("UNNORMED TIME DELTA SEQ:",len(self.unnormed_time_delta_seq[0]))
