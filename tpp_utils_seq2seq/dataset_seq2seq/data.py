@@ -10,7 +10,7 @@ import os
 # import parser
 import argparse
 
-dataset_choices = {'stackoverflow', 'taxi', 'taobao', 'syn_5_0_2', 'financial', 'retweet', 'amazon', 'mooc', 'lastfm'}
+dataset_choices = {'stackoverflow', 'taxi', 'taobao', 'syn_5_0_2', 'financial', 'retweet', 'amazon', 'mooc', 'lastfm', 'hawkes1'}
 
 
 
@@ -114,6 +114,11 @@ def get_data(args):
     data_shape = (args.tgt_len,)
 
 
+    if args.dataset == 'hawkes1':
+        args.num_classes = 1
+        if args.tgt_len == 14:
+            args.time_range = 35
+
     if args.dataset == 'amazon':
         args.num_classes = 16
         ## ADDED BY ME
@@ -156,13 +161,6 @@ def get_data(args):
 
             ## CHANGED BY ME
     if args.dataset == 'taobao':     # MAX LENGTH 64 95 PERCENTILE IS 151231 TAKE 62 SEQ PREDICTION
-#Traceback (most recent call last):
-#  File "/home/aditya/github/cdiff_changed/main.py", line 6, in <module>
-#    args = run_eval(args)
-#           ^^^^^^^^^^^^^^
-#  File "/home/aditya/github/cdiff_changed/utils.py", line 478, in run_eval
-#
-#OverflowError: cannot convert float infinity to integer
         args.num_classes = 17
         args.time_range = 151231
         if args.tgt_len == 25:
