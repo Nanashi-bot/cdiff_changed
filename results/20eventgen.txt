@@ -1,0 +1,34 @@
+Taking 20-40 as all 0s event types and dt:
+
+distance (fixed forecasting) mean is 64.889
+rmse type (fixed forecasting) mean is 4.024
+distance (interval forecasting) is 64.652
+rmse type (interval forecasting) mean is 4.029
+rmse # of events is  0.567
+mae # of events is  0.138
+rmse time is 0.638
+total sampling time is  1.572
+Number of total samples: 10000
+Number of samples per sequence: 1
+MAPE MEAN 5363190
+MAPE STD 803389
+SMAPE MEAN 199
+SMAPE STD 1
+
+
+Taking eps and randomise:
+
+distance (fixed forecasting) mean is 66.192
+rmse type (fixed forecasting) mean is 4.974
+distance (interval forecasting) is 65.955
+rmse type (interval forecasting) mean is 4.969
+rmse # of events is  0.567
+mae # of events is  0.138
+rmse time is 0.638
+total sampling time is  1.441
+Number of total samples: 10000
+Number of samples per sequence: 1
+MAPE MEAN 5363189
+MAPE STD 803389
+SMAPE MEAN 199
+SMAPE STD 1

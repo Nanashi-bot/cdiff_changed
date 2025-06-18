@@ -42,44 +42,34 @@ def get_data(args):
         print('loading {} datasets with boxcox preprocessing...'.format('train'))
         # train = SeqDatasetArBoxCox(dataset_dir=args.dataset_dir,
         #                    mode='train', target_length=args.tgt_len, device=args.device, data_name=args.dataset)
-        # train_loader, train = load_dataset_boxcox(dataset_dir=args.dataset_dir, mode='train',
-        #                                          device=args.device, data_name=args.dataset,
-        #                                           target_length=args.tgt_len)
-        # lmbda_boxcox = train.fitted_lambda
-        # scale = train.scale
-        # train_mean = train.mean_inter_time
-        # train_std = train.std_inter_time
-        # train_min = train.min_inter_time
-        # train_bc_mean = train.boxcox_mean
-        # train_bc_std = train.boxcox_std
-        # train_bc_min = train.boxcox_min_inter_time
-        # args.train_lambda_boxcox = lmbda_boxcox
-        # args.scale = scale
-        # args.train_mean = train_mean
-        # args.train_std = train_std
-        # args.train_min = train_min
-        # args.train_bc_mean = train_bc_mean
-        # args.train_bc_std = train_bc_std
-        # args.train_bc_min = train_bc_min
-        # args.min_inter_time = train_min
+        train_loader, train = load_dataset_boxcox(dataset_dir=args.dataset_dir, mode='train',
+                                                 device=args.device, data_name=args.dataset,
+                                                  target_length=args.tgt_len)
+        lmbda_boxcox = train.fitted_lambda
+        scale = train.scale
+        train_mean = train.mean_inter_time
+        train_std = train.std_inter_time
+        train_min = train.min_inter_time
+        train_bc_mean = train.boxcox_mean
+        train_bc_std = train.boxcox_std
+        train_bc_min = train.boxcox_min_inter_time
+        args.train_lambda_boxcox = lmbda_boxcox
+        args.scale = scale
+        args.train_mean = train_mean
+        args.train_std = train_std
+        args.train_min = train_min
+        args.train_bc_mean = train_bc_mean
+        args.train_bc_std = train_bc_std
+        args.train_bc_min = train_bc_min
+        args.min_inter_time = train_min
 
-        lmbda_boxcox = args.train_lambda_boxcox
-        scale = args.scale
-        train_mean = args.train_mean
-        train_std = args.train_std
-        train_min = args.train_min
-        train_bc_mean = args.train_bc_mean
-        train_bc_std = args.train_bc_std
-        train_bc_min = args.train_bc_min
-        min_inter_time = args.train_min
-
-        # print('loading {} datasets with boxcox preprocessing...'.format('val'))
-        # val_loader, valid = load_dataset_boxcox(dataset_dir=args.dataset_dir, mode='dev', lmbda_boxcox=lmbda_boxcox,
-        #                                            scale=scale, train_mean=train_mean, train_std=train_std,
-        #                                            train_min=train_min, train_bc_mean=train_bc_mean,
-        #                                            train_bc_std=train_bc_std,
-        #                                            train_bc_min=train_bc_min, target_length=args.tgt_len,
-        #                                            data_name=args.dataset)
+        print('loading {} datasets with boxcox preprocessing...'.format('val'))
+        val_loader, valid = load_dataset_boxcox(dataset_dir=args.dataset_dir, mode='dev', lmbda_boxcox=lmbda_boxcox,
+                                                   scale=scale, train_mean=train_mean, train_std=train_std,
+                                                   train_min=train_min, train_bc_mean=train_bc_mean,
+                                                   train_bc_std=train_bc_std,
+                                                   train_bc_min=train_bc_min, target_length=args.tgt_len,
+                                                   data_name=args.dataset)
         print('loading {} datasets with boxcox preprocessing...'.format('test'))
         test_loader, test = load_dataset_boxcox(dataset_dir=args.dataset_dir, mode='test', lmbda_boxcox=lmbda_boxcox,
                                                    scale=scale, train_mean=train_mean, train_std=train_std,
@@ -115,21 +105,12 @@ def get_data(args):
                                                train_min=train_min, train_bc_mean=train_ln_mean,
                                                train_bc_std=train_ln_std,
                                                train_bc_min=train_ln_min, target_length=args.tgt_len)
-        
-        # POINT TO SAMPLED DATA INSTEAD:
         print('loading {} datasets with log preprocessing...'.format('test'))
-        # test_loader, test = load_dataset_ln(dataset_dir=args.dataset_dir, mode='test',
-        #                                        train_mean=train_mean, train_std=train_std,
-        #                                        train_min=train_min, train_bc_mean=train_ln_mean,
-        #                                        train_bc_std=train_ln_std,
-        #                                        train_bc_min=train_ln_min, target_length=args.tgt_len)
-        
         test_loader, test = load_dataset_ln(dataset_dir=args.dataset_dir, mode='test',
                                                train_mean=train_mean, train_std=train_std,
                                                train_min=train_min, train_bc_mean=train_ln_mean,
                                                train_bc_std=train_ln_std,
                                                train_bc_min=train_ln_min, target_length=args.tgt_len)
-
     data_shape = (args.tgt_len,)
 
 
@@ -221,23 +202,22 @@ def get_data(args):
             args.time_range = 250
         if args.tgt_len == 5:
             args.time_range = 150
-    # args.mean_inter_time = train.mean_inter_time
-    # args.std_inter_time = train.std_inter_time
-    # args.min_inter_time = train.min_inter_time
+    args.mean_inter_time = train.mean_inter_time
+    args.std_inter_time = train.std_inter_time
+    args.min_inter_time = train.min_inter_time
     # Data Loader
     if args.boxcox:
         if args.validation:
-            # train_loader = DataLoader(train, batch_size=args.batch_size,
-            #                           shuffle=True, collate_fn=collateboxcox)
-            ## THE LINE RIGHT BELOW WAS COMMENTED OUT ALREADY
+            train_loader = DataLoader(train, batch_size=args.batch_size,
+                                      shuffle=True, collate_fn=collateboxcox)
             # eval_loader = DataLoader(valid, batch_size=args.batch_size,
             #                          shuffle=False, collate_fn=collateboxcox)
             eval_loader = DataLoader(valid, batch_size=1024,
                                      shuffle=False, collate_fn=collateboxcox)
         else:
-            # dataset_train = ConcatDataset([train, valid])
-            # train_loader = DataLoader(dataset_train, batch_size=args.batch_size,
-            #                           shuffle=True, collate_fn=collateboxcox)
+            dataset_train = ConcatDataset([train, valid])
+            train_loader = DataLoader(dataset_train, batch_size=args.batch_size,
+                                      shuffle=True, collate_fn=collateboxcox)
             eval_loader = DataLoader(test, batch_size=args.batch_size,
                                      shuffle=False, collate_fn=collateboxcox)
     else:
@@ -249,12 +229,11 @@ def get_data(args):
             eval_loader = DataLoader(valid, batch_size=1024,
                                      shuffle=False, collate_fn=collateln)
         else:
-            # dataset_train = ConcatDataset([train, valid])
-            # train_loader = DataLoader(dataset_train, batch_size=args.batch_size,
-            #                           shuffle=True, collate_fn=collateln)
+            dataset_train = ConcatDataset([train, valid])
+            train_loader = DataLoader(dataset_train, batch_size=args.batch_size,
+                                      shuffle=True, collate_fn=collateln)
             eval_loader = DataLoader(test, batch_size=args.batch_size,
                                      shuffle=False, collate_fn=collateln)
 
     num_classes = args.num_classes
-    return 0, eval_loader, data_shape, num_classes
-    # return train_loader, eval_loader, data_shape, num_classes
+    return train_loader, eval_loader, data_shape, num_classes
