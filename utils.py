@@ -216,7 +216,7 @@ def run_eval(args):
 
     ############## Saving base ##############
 
-    path_samples = "./nullsamples/hawkes1_1024/100"
+    path_samples = "./nullsamples/hawkes1_1024/200"
 
     args.path_samples = path_samples
 
