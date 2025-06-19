@@ -132,7 +132,7 @@ def run_eval(args):
 
 
     ## CHANGED BY ME:
-    path_main = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1/'
+    path_main = './log/flow/hawkes1/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1_256'
     #path_args = '{}/args.pickle'.format(args.log_path)
 #    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
     path_args = os.path.join(path_main, "args.pickle")
@@ -164,6 +164,10 @@ def run_eval(args):
     args.distance_del_cost = distance_del_cost
     args.trans_cost = trans_cost
 
+
+    ##  CHANGED BY ME:
+    args.batch_size = 256
+
     ###################################################
     ################## Load dataset ###################
     ###################################################
@@ -188,7 +192,8 @@ def run_eval(args):
     args.validation = False
 
     ### CHANGED HERE
-    args.dataset_dir = './nullsamples/amazon20/61_80'
+    args.dataset_dir = './nullsamples/hawkes1'
+    # args.dataset_dir = './data/amazon1024test'
     train_loader, test_loader, data_shape, num_classes = get_data(args)
     args.validation = True
 
@@ -211,7 +216,7 @@ def run_eval(args):
 
     ############## Saving base ##############
 
-    path_samples = "./nullsamples/amazon20/81_100"
+    path_samples = "./nullsamples/hawkes1/20"
 
     args.path_samples = path_samples
 
@@ -263,6 +268,7 @@ def run_eval(args):
     gt_e_total = torch.empty(0, args.tgt_len).to('cpu')
     gt_x_total = torch.empty(0, args.tgt_len).to('cpu')
 
+    # print(len(test_loader))
     with torch.no_grad():
         since = time.time()
         for iteration, batch in enumerate(test_loader):
@@ -279,23 +285,36 @@ def run_eval(args):
 
             num_elem = tgt_e.flatten().size(0)
 
+            # print(history_times)
+
+
             pred_e = torch.empty(tgt_e.size(0), tgt_e.size(1), 0).to(device)
+            # pred_e = torch.empty(6000, tgt_e.size(1), 0).to(device)
+            # pred_x = torch.empty(6000, tgt_e.size(1), 0).to(device)
             pred_x = torch.empty(tgt_e.size(0), tgt_e.size(1), 0).to(device)
 
             hist_x_original = hist_x.clone()
             hist_e_original = hist_e.clone()
-
+            # print("TGT E SIZE 0 : ",tgt_e.size(0))
+            # print("TGT E SIZE 1 : ",tgt_e.size(1))
+            
             for i in range(num_samples):
                 print("now it is sample:", i)
                 p_x = torch.empty(tgt_e.size(0), 0).to(device)
                 p_e = torch.empty(tgt_e.size(0), 0).to(device)
+                # p_x = torch.empty(6000, 0).to(device)
+                # p_e = torch.empty(6000, 0).to(device)
                 #hist_x = hist_x_original.clone()
                 #hist_e = hist_e_original.clone()
                     ### GIVING NULL CONTEXT FOR SAMPLING:
-                # if args.dataset == 'amazon':
-                #     tgt = 88
-                #     batchsize = 500
-                #     num_events = 16
+                if args.dataset == 'amazon':
+                    tgt = 20
+                    # batchsize = 6000
+                    batchsize = 1024
+                    num_events = 16
+                if args.dataset == 'hawkes1':
+                    batchsize = 1024
+                    num_events = 1
                 # if args.dataset == 'stackoverflow':
                 #     tgt = 98
                 #     batchsize = 401
@@ -308,30 +327,32 @@ def run_eval(args):
                 #     tgt = 36
                 #     batchsize = 500
                 #     num_events = 3
-                # hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
-                # hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
-                # history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
+                hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
+                hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
+                history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
 
                 print("History x:", hist_x[0])
                 print("History e:", hist_e[0])
                 print("History times:", history_times[0])
 
-                p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)  # change to max sequence length length
+                p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
+                print(pred_x.shape)
+                print(p_x.shape)
                 pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
                 pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
 
 
-                print("Before boxcox:")
-                ## LENGTH 500 P_E AND P_X GENERATED
-                print("First sequence:")
-                print(len(p_e), len(p_x), "lengths")
-                print("Predicted events: \n",p_e[0])
-                print("Predicted timestamps: \n",p_x[0])
-                #print()
-                print("Second sequence:")
-                print("Predicted events: \n",p_e[1])
-                print("Predicted timestamps: \n",p_x[1])
-                print("\n\n")
+                # print("Before boxcox:")
+                # ## LENGTH 500 P_E AND P_X GENERATED
+                # print("First sequence:")
+                # print(len(p_e), len(p_x), "lengths")
+                # print("Predicted events: \n",p_e[0])
+                # print("Predicted timestamps: \n",p_x[0])
+                # #print()
+                # print("Second sequence:")
+                # print("Predicted events: \n",p_e[1])
+                # print("Predicted timestamps: \n",p_x[1])
+                # print("\n\n")
 
             if args.boxcox:
                 # https://stats.stackexchange.com/questions/541748/simple-problem-with-box-cox-transformation-in-a-time-series-model
@@ -365,7 +386,7 @@ def run_eval(args):
             gt_e_total = torch.cat([gt_e_total, tgt_e.cpu()], dim=0)
             gt_x_total = torch.cat([gt_x_total, unnormed_target_dt.cpu()], dim=0)
 
-            print("After inverse boxcox:")
+            # print("After inverse boxcox:")
             print("First sequence:")
             print("Predicted events: \n",pred_e[0].flatten().long())
             print("Predicted timestamps: \n",pred_x[0].flatten())
@@ -373,13 +394,13 @@ def run_eval(args):
             print("Ground truth events: \n",tgt_e[0])
             print("Ground truth timestamp: \n",unnormed_target_dt[0])
             print("\n\n")
-            print("Second sequence:")
-            print("Predicted events: \n",pred_e[1].flatten().long())
-            print("Predicted timestamps: \n",pred_x[1].flatten())
+            # print("Second sequence:")
+            # print("Predicted events: \n",pred_e[1].flatten().long())
+            # print("Predicted timestamps: \n",pred_x[1].flatten())
 
-            print("Ground truth events: \n",tgt_e[1])
-            print("Ground truth timestamp: \n",unnormed_target_dt[1])
-            print("\n\n")
+            # print("Ground truth events: \n",tgt_e[1])
+            # print("Ground truth timestamp: \n",unnormed_target_dt[1])
+            # print("\n\n")
 
 
 
@@ -463,19 +484,19 @@ def run_eval(args):
     ############################################ Time RMSE ############################################
     ###################################################################################################
 
-    rmse_mean, rmse_std = time_rmse_tensor(pred_x.cpu(), gt_x.cpu())
+    # rmse_mean, rmse_std = time_rmse_tensor(pred_x.cpu(), gt_x.cpu())
 
-    ##############################################################################################
-    ############################################ MAPE ############################################
-    ##############################################################################################
+    # ##############################################################################################
+    # ############################################ MAPE ############################################
+    # ##############################################################################################
 
-    mape_mean, mape_std = mape_tensor(pred_x.cpu(), gt_x.cpu())
+    # mape_mean, mape_std = mape_tensor(pred_x.cpu(), gt_x.cpu())
 
-    ##############################################################################################
-    ############################################ sMAPE ###########################################
-    ##############################################################################################
+    # ##############################################################################################
+    # ############################################ sMAPE ###########################################
+    # ##############################################################################################
 
-    smape_mean, smape_std = sMape_tensor(pred_x.cpu(), gt_x.cpu())
+    # smape_mean, smape_std = sMape_tensor(pred_x.cpu(), gt_x.cpu())
 
     ###############################################################################################
     ############################################# Log #############################################
@@ -504,17 +525,17 @@ def run_eval(args):
     print('rmse # of events is {: .3f}'.format(rmse_num_events))
     print('mae # of events is {: .3f}'.format(mae_num_events))
 
-    print('rmse time is {:.3f}'.format(rmse_mean))
+    # print('rmse time is {:.3f}'.format(rmse_mean))
 
     print('total sampling time is {total_time: .3f}'.format(total_time=total_sampling_time))
     print('Number of total samples: {}'.format(pred_e_copy.flatten().size(0)))
     print('Number of samples per sequence: {}'.format(num_samples))
 
-    ## ADDED BY ME:
-    print("MAPE MEAN", int(mape_mean))
-    print("MAPE STD", int(mape_std))
-    print("SMAPE MEAN", int(smape_mean))
-    print("SMAPE STD", int(smape_std))
+    # ## ADDED BY ME:
+    # print("MAPE MEAN", int(mape_mean))
+    # print("MAPE STD", int(mape_std))
+    # print("SMAPE MEAN", int(smape_mean))
+    # print("SMAPE STD", int(smape_std))
 
     #with open(path_samples_result, 'w') as f:
     #    f.write('distance (fixed forecasting): {:.3f}\n'.format(

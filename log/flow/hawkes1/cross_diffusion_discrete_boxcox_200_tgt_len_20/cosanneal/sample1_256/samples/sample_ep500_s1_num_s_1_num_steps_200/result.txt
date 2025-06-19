@@ -1,0 +1,11 @@
+distance (fixed forecasting): 33.805
+rmse type (fixed forecasting): 0.000
+distance (interval forecasting): 31.528
+rmse type (interval forecasting): 1.105
+rmse # of events:  3.131
+mae # of events:  1.105
+rmse time: 3.027
+total sampling time:  1.347s
+Number of total samples: 4000
+Number of samples per sequence: 1
+Num of training parameters: 54483
