@@ -130,9 +130,10 @@ def run_eval(args):
         args = parser.parse_args()
         eval_seed = args.eval_seed
 
+    d_name = "amazon"
 
     ## CHANGED BY ME:
-    path_main = './log/flow/hawkes1/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1_1024'
+    path_main = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1'
     #path_args = '{}/args.pickle'.format(args.log_path)
 #    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
     path_args = os.path.join(path_main, "args.pickle")
@@ -184,387 +185,448 @@ def run_eval(args):
     # mean_inter_time = train.mean_inter_time
     # min_inter_time = train.min_inter_time
 
-    min_inter_time = args.min_inter_time
-    mean_inter_time = args.mean_inter_time
-    std_inter_time = args.std_inter_time
+    # min_inter_time = args.min_inter_time
+    # mean_inter_time = args.mean_inter_time
+    # std_inter_time = args.std_inter_time
 
 
-    args.validation = False
+    # args.validation = False
 
-    ### CHANGED HERE
-    args.dataset_dir = './nullsamples/hawkes1_1024'
-    # args.dataset_dir = './data/amazon1024test'
-    train_loader, test_loader, data_shape, num_classes = get_data(args)
-    args.validation = True
+    # ### CHANGED HERE
+    # args.dataset_dir = './nullsamples/nonstat_poisson'
+    # # args.dataset_dir = './data/amazon1024test'
+    # train_loader, test_loader, data_shape, num_classes = get_data(args)
+    # args.validation = True
 
-    #########################################################
-    ##################### Specify model #####################
-    #########################################################
+    # #########################################################
+    # ##################### Specify model #####################
+    # #########################################################
 
-    model = get_model(args, num_classes=num_classes)
-    checkpoint = torch.load(path_check, weights_only=False)
+    # model = get_model(args, num_classes=num_classes)
+    # checkpoint = torch.load(path_check, weights_only=False)
 
-    model.load_state_dict(checkpoint['model'])
-    print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
+    # model.load_state_dict(checkpoint['model'])
+    # print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
 
-    total_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    print(f'{total_trainable_params: } training parameters.')
-
-    ##########################################################################################
-    ##################################### Specify Saving #####################################
-    ##########################################################################################
-
-    ############## Saving base ##############
-
-    path_samples = "./nullsamples/hawkes1_1024/200"
-
-    args.path_samples = path_samples
-
-    ############## Result log ##############
-
-    path_samples_result = os.path.join(path_samples, "result.txt")
-
-    args.path_samples_result = path_samples_result
-
-    ############## dt Samples Saving Path ##############
-    
-    path_samples_dt = os.path.join(path_samples, "samples_dt.pt")
-
-    args.path_samples_dt = path_samples_dt
-
-    path_samples_chain_dt = os.path.join(path_samples, "samples_chain_dt.pt")
-
-    args.path_samples_chain_dt = path_samples_chain_dt
-
-    ############## type Samples Saving Path ##############
-
-    path_samples_type = os.path.join(path_samples, "samples_type.pt")
-
-    args.path_samples_type = path_samples_type
-
-    path_samples_chain_type = os.path.join(path_samples, "samples_type.pt")
-    args.path_samples_chain_type = path_samples_chain_type
-
-    ############## dt ground truth Saving Path ##############
-
-    path_gt_dt = os.path.join(path_samples, "gt_dt.pt")
-    args.path_gt_dt = path_gt_dt
-
-    ############## type ground truth Saving Path ##############
-
-    path_gt_type = os.path.join(path_samples, "gt_type.pt")
-    args.path_gt_type = path_gt_type
-
-    ####################################################################################
-    ##################################### Sampling #####################################
-    ####################################################################################
-
-    device = args.device
-    model = model.to(device)
-    model = model.eval()
-
-    pred_e_total = torch.empty(0, args.tgt_len, num_samples).to('cpu')
-    pred_x_total = torch.empty(0, args.tgt_len, num_samples).to('cpu')
-    gt_e_total = torch.empty(0, args.tgt_len).to('cpu')
-    gt_x_total = torch.empty(0, args.tgt_len).to('cpu')
-
-    # print(len(test_loader))
-    with torch.no_grad():
-        since = time.time()
-        for iteration, batch in enumerate(test_loader):
-
-            history_times = batch.history_times
-            hist_e = batch.history_types.long()
-            hist_x = batch.history_dt
-            target_times = batch.target_times
-            tgt_e = batch.target_types.long()
-            tgt_x = batch.target_dt
-            target_onehots = batch.target_onehots
-            unnormed_history_dt = batch.unnormed_history_dt
-            unnormed_target_dt = batch.unnormed_target_dt
-
-            num_elem = tgt_e.flatten().size(0)
-
-            # print(history_times)
+    # total_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    # print(f'{total_trainable_params: } training parameters.')
 
 
-            pred_e = torch.empty(tgt_e.size(0), tgt_e.size(1), 0).to(device)
-            # pred_e = torch.empty(6000, tgt_e.size(1), 0).to(device)
-            # pred_x = torch.empty(6000, tgt_e.size(1), 0).to(device)
-            pred_x = torch.empty(tgt_e.size(0), tgt_e.size(1), 0).to(device)
 
-            hist_x_original = hist_x.clone()
-            hist_e_original = hist_e.clone()
-            # print("TGT E SIZE 0 : ",tgt_e.size(0))
-            # print("TGT E SIZE 1 : ",tgt_e.size(1))
-            
-            for i in range(num_samples):
-                print("now it is sample:", i)
-                p_x = torch.empty(tgt_e.size(0), 0).to(device)
-                p_e = torch.empty(tgt_e.size(0), 0).to(device)
-                # p_x = torch.empty(6000, 0).to(device)
-                # p_e = torch.empty(6000, 0).to(device)
-                #hist_x = hist_x_original.clone()
-                #hist_e = hist_e_original.clone()
-                    ### GIVING NULL CONTEXT FOR SAMPLING:
-                # if args.dataset == 'amazon':
-                #     tgt = 20
-                #     batchsize = 6000
-                #     batchsize = 1024
-                #     num_events = 16
-                if args.dataset == 'hawkes1':
-                    batchsize = 1024
-                    num_events = 1
-                # if args.dataset == 'stackoverflow':
-                #     tgt = 98
-                #     batchsize = 401
-                #     num_events = 22
-                # if args.dataset == 'taxi':
-                #     tgt = 10
-                #     batchsize = 128
-                #     num_events = 10
-                # if args.dataset == 'retweet':
-                #     tgt = 36
-                #     batchsize = 500
-                #     num_events = 3
-                # hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
-                # # hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
-                # hist_e = torch.randint(0, num_events, (batchsize, args.tgt_len)).to('cuda')
-                # history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
+    # ####################################################################################
+    # ##################################### Sampling #####################################
+    # ####################################################################################
 
-                print("History x:", hist_x[0])
-                print("History e:", hist_e[0])
-                print("History times:", history_times[0])
-
-                p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
-                print(pred_x.shape)
-                print(p_x.shape)
-                pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
-                pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
+    # device = args.device
+    # model = model.to(device)
+    # model = model.eval()
 
 
-                # print("Before boxcox:")
-                # ## LENGTH 500 P_E AND P_X GENERATED
-                # print("First sequence:")
-                # print(len(p_e), len(p_x), "lengths")
-                # print("Predicted events: \n",p_e[0])
-                # print("Predicted timestamps: \n",p_x[0])
-                # #print()
-                # print("Second sequence:")
-                # print("Predicted events: \n",p_e[1])
-                # print("Predicted timestamps: \n",p_x[1])
-                # print("\n\n")
+    import copy
 
-            if args.boxcox:
-                # https://stats.stackexchange.com/questions/541748/simple-problem-with-box-cox-transformation-in-a-time-series-model
-                # Why need clamp, this website gives the answer
+    with open(f'./data/{d_name}/test.pkl', 'rb') as f:
+        data = pickle.load(f)
 
-                pred_x = pred_x * args.train_bc_std + args.train_bc_mean
-                if args.train_lambda_boxcox > 0:
-                    pred_x[
-                        pred_x < -1 / args.train_lambda_boxcox] = -1 / args.train_lambda_boxcox + Constants.EPS * 1000
+    template = [{'type_event': 0,
+                'time_since_last_event': 0,
+                'time_since_start': 0}]
+
+    data['test'].extend([copy.deepcopy(template) for _ in range(1024 - 200)])
+
+    with open(f'./nullsamples/{d_name}/test.pkl', 'wb') as f:
+        pickle.dump(data, f)
+
+    def gen_20(counter, num_loops):
+
+
+        min_inter_time = args.min_inter_time
+        args.validation = False
+
+        ### CHANGED HERE
+        if counter == 1:
+            args.dataset_dir = f'./nullsamples/{d_name}'
+        else:
+            args.dataset_dir = f'./nullsamples/{d_name}/temp'
+        # args.dataset_dir = './data/amazon1024test'
+        train_loader, test_loader, data_shape, num_classes = get_data(args)
+        args.validation = True
+
+        #########################################################
+        ##################### Specify model #####################
+        #########################################################
+
+        model = get_model(args, num_classes=num_classes)
+        checkpoint = torch.load(path_check, weights_only=False)
+
+        model.load_state_dict(checkpoint['model'])
+        print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
+
+        total_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        print(f'{total_trainable_params: } training parameters.')
+
+
+
+        ####################################################################################
+        ##################################### Sampling #####################################
+        ####################################################################################
+
+        device = args.device
+        model = model.to(device)
+        model = model.eval()
+
+        ##########################################################################################
+        ##################################### Specify Saving #####################################
+        ##########################################################################################
+
+        ############## Saving base ##############
+
+        path_samples = f"./nullsamples/{d_name}/temp"
+
+        args.path_samples = path_samples
+
+        ############## Result log ##############
+
+        path_samples_result = os.path.join(path_samples, "result.txt")
+
+        args.path_samples_result = path_samples_result
+
+        ############## dt Samples Saving Path ##############
+        
+        path_samples_dt = os.path.join(path_samples, f"samples_dt_{counter}.pt")
+
+        args.path_samples_dt = path_samples_dt
+
+        path_samples_chain_dt = os.path.join(path_samples, "samples_chain_dt.pt")
+
+        args.path_samples_chain_dt = path_samples_chain_dt
+
+        ############## type Samples Saving Path ##############
+
+        path_samples_type = os.path.join(path_samples, f"samples_type_{counter}.pt")
+
+        args.path_samples_type = path_samples_type
+
+        path_samples_chain_type = os.path.join(path_samples, f"samples_type_{counter}.pt")
+        args.path_samples_chain_type = path_samples_chain_type
+
+        ############## dt ground truth Saving Path ##############
+
+        path_gt_dt = os.path.join(path_samples, "gt_dt.pt")
+        args.path_gt_dt = path_gt_dt
+
+        ############## type ground truth Saving Path ##############
+
+        path_gt_type = os.path.join(path_samples, "gt_type.pt")
+        args.path_gt_type = path_gt_type
+
+        print(f"Generating 20 events {counter} times")
+
+        pred_e_total = torch.empty(0, args.tgt_len, num_samples).to('cpu')
+        pred_x_total = torch.empty(0, args.tgt_len, num_samples).to('cpu')
+        gt_e_total = torch.empty(0, args.tgt_len).to('cpu')
+        gt_x_total = torch.empty(0, args.tgt_len).to('cpu')
+
+        # print(len(test_loader))
+        with torch.no_grad():
+            since = time.time()
+            for iteration, batch in enumerate(test_loader):
+
+                history_times = batch.history_times
+                hist_e = batch.history_types.long()
+                hist_x = batch.history_dt
+                target_times = batch.target_times
+                tgt_e = batch.target_types.long()
+                tgt_x = batch.target_dt
+                target_onehots = batch.target_onehots
+                unnormed_history_dt = batch.unnormed_history_dt
+                unnormed_target_dt = batch.unnormed_target_dt
+
+                num_elem = tgt_e.flatten().size(0)
+
+                # print(history_times)
+
+
+                pred_e = torch.empty(tgt_e.size(0), tgt_e.size(1), 0).to(device)
+                # pred_e = torch.empty(6000, tgt_e.size(1), 0).to(device)
+                # pred_x = torch.empty(6000, tgt_e.size(1), 0).to(device)
+                pred_x = torch.empty(tgt_e.size(0), tgt_e.size(1), 0).to(device)
+
+                hist_x_original = hist_x.clone()
+                hist_e_original = hist_e.clone()
+                # print("TGT E SIZE 0 : ",tgt_e.size(0))
+                # print("TGT E SIZE 1 : ",tgt_e.size(1))
+                
+                for i in range(num_samples):
+                    print("now it is sample:", i)
+                    p_x = torch.empty(tgt_e.size(0), 0).to(device)
+                    p_e = torch.empty(tgt_e.size(0), 0).to(device)
+                    # p_x = torch.empty(6000, 0).to(device)
+                    # p_e = torch.empty(6000, 0).to(device)
+                    #hist_x = hist_x_original.clone()
+                    #hist_e = hist_e_original.clone()
+                        ### GIVING NULL CONTEXT FOR SAMPLING:
+                    if args.dataset == 'amazon':
+                        # tgt = 20
+                        batchsize = 1024
+                        num_events = 16
+                    if args.dataset == 'hawkes1':
+                        batchsize = 1024
+                        num_events = 1
+                    if args.dataset == 'nonstat_poisson':
+                        batchsize = 1024
+                        num_events = 1
+                    if args.dataset == 'nonstat_renewal':
+                        batchsize = 1024
+                        num_events = 1
+                    # if args.dataset == 'stackoverflow':
+                    #     tgt = 98
+                    #     batchsize = 401
+                    #     num_events = 22
+                    # if args.dataset == 'taxi':
+                    #     tgt = 10
+                    #     batchsize = 128
+                    #     num_events = 10
+                    # if args.dataset == 'retweet':
+                    #     tgt = 36
+                    #     batchsize = 500
+                    #     num_events = 3
+                    if counter == 1:
+                        hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
+                        # hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
+                        hist_e = torch.randint(0, num_events, (batchsize, args.tgt_len)).to('cuda')
+                        history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
+
+                    print("History x:", hist_x[0])
+                    print("History e:", hist_e[0])
+                    print("History times:", history_times[0])
+
+                    p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
+                    # print(pred_x.shape)
+                    # print(p_x.shape)
+                    pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
+                    pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
+
+                if args.boxcox:
+                    # https://stats.stackexchange.com/questions/541748/simple-problem-with-box-cox-transformation-in-a-time-series-model
+                    # Why need clamp, this website gives the answer
+
+                    pred_x = pred_x * args.train_bc_std + args.train_bc_mean
+                    if args.train_lambda_boxcox > 0:
+                        pred_x[
+                            pred_x < -1 / args.train_lambda_boxcox] = -1 / args.train_lambda_boxcox + Constants.EPS * 1000
+                    else:
+                        pred_x[
+                            pred_x > -1 / args.train_lambda_boxcox] = -1 / args.train_lambda_boxcox - Constants.EPS * 1000
+                    pred_x = inv_boxcox(pred_x.cpu(), args.train_lambda_boxcox) / args.scale
+                    ## CHANGED BY ME
+                    pred_x[pred_x < 0] = torch.tensor((args.min_inter_time + Constants.EPS) * 0.85, dtype=pred_x.dtype, device=pred_x.device)
+
                 else:
-                    pred_x[
-                        pred_x > -1 / args.train_lambda_boxcox] = -1 / args.train_lambda_boxcox - Constants.EPS * 1000
-                pred_x = inv_boxcox(pred_x.cpu(), args.train_lambda_boxcox) / args.scale
+                    pred_x = pred_x * args.train_ln_std + args.train_ln_mean
+                    pred_x = torch.exp(pred_x)
+                    if args.dataset == 'retweet':
+                        pred_x = pred_x / Constants.SCALE_RETWEET
+                    else:
+                        pred_x = pred_x / Constants.SCALE_UNIFORM
+                    pred_x[pred_x < 0] = ((args.min_inter_time + Constants.EPS) * 0.85).to(args.device)
+
                 ## CHANGED BY ME
-                pred_x[pred_x < 0] = torch.tensor((args.min_inter_time + Constants.EPS) * 0.85, dtype=pred_x.dtype, device=pred_x.device)
+                pred_x[pred_x < 0] = torch.tensor((min_inter_time + Constants.EPS), device=pred_x.device, dtype=pred_x.dtype)
 
-            else:
-                pred_x = pred_x * args.train_ln_std + args.train_ln_mean
-                pred_x = torch.exp(pred_x)
-                if args.dataset == 'retweet':
-                    pred_x = pred_x / Constants.SCALE_RETWEET
-                else:
-                    pred_x = pred_x / Constants.SCALE_UNIFORM
-                pred_x[pred_x < 0] = ((args.min_inter_time + Constants.EPS) * 0.85).to(args.device)
+                pred_x_total = torch.cat([pred_x_total, pred_x.cpu()], dim=0)
+                pred_e_total = torch.cat([pred_e_total, pred_e.cpu()], dim=0)
+                gt_e_total = torch.cat([gt_e_total, tgt_e.cpu()], dim=0)
+                gt_x_total = torch.cat([gt_x_total, unnormed_target_dt.cpu()], dim=0)
 
-            ## CHANGED BY ME
-            pred_x[pred_x < 0] = torch.tensor((min_inter_time + Constants.EPS), device=pred_x.device, dtype=pred_x.dtype)
+                # print("After inverse boxcox:")
+                print("First sequence:")
+                print("Predicted events: \n",pred_e[0].flatten().long())
+                print("Predicted timestamps: \n",pred_x[0].flatten())
 
-            pred_x_total = torch.cat([pred_x_total, pred_x.cpu()], dim=0)
-            pred_e_total = torch.cat([pred_e_total, pred_e.cpu()], dim=0)
-            gt_e_total = torch.cat([gt_e_total, tgt_e.cpu()], dim=0)
-            gt_x_total = torch.cat([gt_x_total, unnormed_target_dt.cpu()], dim=0)
-
-            # print("After inverse boxcox:")
-            print("First sequence:")
-            print("Predicted events: \n",pred_e[0].flatten().long())
-            print("Predicted timestamps: \n",pred_x[0].flatten())
-
-            print("Ground truth events: \n",tgt_e[0])
-            print("Ground truth timestamp: \n",unnormed_target_dt[0])
-            print("\n\n")
-            # print("Second sequence:")
-            # print("Predicted events: \n",pred_e[1].flatten().long())
-            # print("Predicted timestamps: \n",pred_x[1].flatten())
-
-            # print("Ground truth events: \n",tgt_e[1])
-            # print("Ground truth timestamp: \n",unnormed_target_dt[1])
-            # print("\n\n")
+                print("Ground truth events: \n",tgt_e[0])
+                print("Ground truth timestamp: \n",unnormed_target_dt[0])
+                print("\n\n")
 
 
 
-    ###################################################################################################
-    ########################################### Record time ###########################################
-    ###################################################################################################
+        ###################################################################################################
+        ########################################### Record time ###########################################
+        ###################################################################################################
 
-    total_sampling_time = time.time() - since
+        total_sampling_time = time.time() - since
 
-    pred_e_copy = pred_e_total.detach().clone()
+        pred_e_copy = pred_e_total.detach().clone()
 
-    pred_e = pred_e_total.cpu().long()
-    pred_x = pred_x_total.cpu()
+        pred_e = pred_e_total.cpu().long()
+        pred_x = pred_x_total.cpu()
 
-    gt_e = gt_e_total.cpu().long()
-    gt_x = gt_x_total.cpu() + Constants.EPS
+        gt_e = gt_e_total.cpu().long()
+        gt_x = gt_x_total.cpu() + Constants.EPS
 
 
-    ######################################################################################################
-    ############################################ Save Samples ############################################
-    ######################################################################################################
+        ######################################################################################################
+        ############################################ Save Samples ############################################
+        ######################################################################################################
 
-    torch.save(pred_x, path_samples_dt)
-    torch.save(pred_e_copy.cpu(), path_samples_type)
+        torch.save(pred_x, path_samples_dt)
+        torch.save(pred_e_copy.cpu(), path_samples_type)
 
-    ###########################################################################################################
-    ############################################ Save Ground Truth ############################################
-    ###########################################################################################################
+        ###########################################################################################################
+        ############################################ Save Ground Truth ############################################
+        ###########################################################################################################
 
-    torch.save(gt_x, path_gt_dt)
-    torch.save(gt_e, path_gt_type)
+        torch.save(gt_x, path_gt_dt)
+        torch.save(gt_e, path_gt_type)
 
-    ######################################################################################################
-    ############################################ Take Average ############################################
-    ######################################################################################################
-    # pred_x_clone = pred_x.detach().clone()[pred_x<gt_x.max()+1]
-    pred_x_clone = pred_x.detach().clone()
-    pred_e_clone = pred_e.detach().clone()
-    pred_x = pred_x.mean(dim=-1).squeeze(-1)
-    pred_e = torch.mode(pred_e, dim=-1).values.long()
-    gt_e = gt_e
-    gt_x = gt_x
+        ######################################################################################################
+        ############################################ Take Average ############################################
+        ######################################################################################################
+        # pred_x_clone = pred_x.detach().clone()[pred_x<gt_x.max()+1]
+        pred_x_clone = pred_x.detach().clone()
+        pred_e_clone = pred_e.detach().clone()
+        pred_x = pred_x.mean(dim=-1).squeeze(-1)
+        pred_e = torch.mode(pred_e, dim=-1).values.long()
+        gt_e = gt_e
+        gt_x = gt_x
 
-    ########################################################################################################
-    ############################################ OTD w/o filter ############################################
-    ########################################################################################################
+        ########################################################################################################
+        ############################################ OTD w/o filter ############################################
+        ########################################################################################################
 
-    filter = False
-    distances_wo_filter = get_distances_diffusion(pred_x, pred_e, gt_x, gt_e, args.num_classes, filter,
-                                                  args.time_range, distance_del_cost, trans_cost)
-
-    ##############################################################################################################
-    ############################################ Type RMSE w/o filter ############################################
-    ##############################################################################################################
-
-    filter = False
-    rmse_types_wo_filter = type_rmse_diffusion(pred_x, pred_e, gt_x, gt_e, args.num_classes, filter, args.time_range)
-
-    #########################################################################################################
-    ############################################ OTD with filter ############################################
-    #########################################################################################################
-
-    filter = True
-    distances_with_filter = get_distances_diffusion(pred_x, pred_e, gt_x, gt_e, args.num_classes, filter,
+        filter = False
+        distances_wo_filter = get_distances_diffusion(pred_x, pred_e, gt_x, gt_e, args.num_classes, filter,
                                                     args.time_range, distance_del_cost, trans_cost)
 
-    ###############################################################################################################
-    ############################################ Type RMSE with filter ############################################
-    ###############################################################################################################
+        ##############################################################################################################
+        ############################################ Type RMSE w/o filter ############################################
+        ##############################################################################################################
 
-    filter = True
-    rmse_types_with_filter = type_rmse_diffusion(pred_x, pred_e, gt_x, gt_e, args.num_classes, filter, args.time_range)
+        filter = False
+        rmse_types_wo_filter = type_rmse_diffusion(pred_x, pred_e, gt_x, gt_e, args.num_classes, filter, args.time_range)
 
-    ##################################################################################################################
-    ############################################ rmse and mae # of Events ############################################
-    ##################################################################################################################
+        #########################################################################################################
+        ############################################ OTD with filter ############################################
+        #########################################################################################################
 
-    rmse_num_events, mae_num_events = rmse_mae_num_events_diffusion(pred_x, pred_e, gt_x, gt_e, args.time_range)
+        filter = True
+        distances_with_filter = get_distances_diffusion(pred_x, pred_e, gt_x, gt_e, args.num_classes, filter,
+                                                        args.time_range, distance_del_cost, trans_cost)
 
-    ###################################################################################################
-    ############################################ Time RMSE ############################################
-    ###################################################################################################
+        ###############################################################################################################
+        ############################################ Type RMSE with filter ############################################
+        ###############################################################################################################
 
-    # rmse_mean, rmse_std = time_rmse_tensor(pred_x.cpu(), gt_x.cpu())
+        filter = True
+        rmse_types_with_filter = type_rmse_diffusion(pred_x, pred_e, gt_x, gt_e, args.num_classes, filter, args.time_range)
 
-    # ##############################################################################################
-    # ############################################ MAPE ############################################
-    # ##############################################################################################
+        ##################################################################################################################
+        ############################################ rmse and mae # of Events ############################################
+        ##################################################################################################################
 
-    # mape_mean, mape_std = mape_tensor(pred_x.cpu(), gt_x.cpu())
+        rmse_num_events, mae_num_events = rmse_mae_num_events_diffusion(pred_x, pred_e, gt_x, gt_e, args.time_range)
 
-    # ##############################################################################################
-    # ############################################ sMAPE ###########################################
-    # ##############################################################################################
+        ###############################################################################################
+        ############################################# Log #############################################
+        ###############################################################################################
 
-    # smape_mean, smape_std = sMape_tensor(pred_x.cpu(), gt_x.cpu())
+        distances_wo_filter = np.array(distances_wo_filter)
+        print('distance (fixed forecasting) mean is {:.3f}'.format(
+            distances_wo_filter.mean())
+        )
 
-    ###############################################################################################
-    ############################################# Log #############################################
-    ###############################################################################################
+        rmse_types_wo_filter = np.array(rmse_types_wo_filter)
+        print('rmse type (fixed forecasting) mean is {:.3f}'.format(
+            rmse_types_wo_filter.mean())
+        )
 
-    distances_wo_filter = np.array(distances_wo_filter)
-    print('distance (fixed forecasting) mean is {:.3f}'.format(
-        distances_wo_filter.mean())
-    )
+        distances_with_filter = np.array(distances_with_filter)
+        print('distance (interval forecasting) is {:.3f}'.format(
+            distances_with_filter.mean())
+        )
 
-    rmse_types_wo_filter = np.array(rmse_types_wo_filter)
-    print('rmse type (fixed forecasting) mean is {:.3f}'.format(
-        rmse_types_wo_filter.mean())
-    )
+        rmse_types_with_filter = np.array(rmse_types_with_filter)
+        print('rmse type (interval forecasting) mean is {:.3f}'.format(
+            rmse_types_with_filter.mean())
+        )
 
-    distances_with_filter = np.array(distances_with_filter)
-    print('distance (interval forecasting) is {:.3f}'.format(
-        distances_with_filter.mean())
-    )
+        print('rmse # of events is {: .3f}'.format(rmse_num_events))
+        print('mae # of events is {: .3f}'.format(mae_num_events))
 
-    rmse_types_with_filter = np.array(rmse_types_with_filter)
-    print('rmse type (interval forecasting) mean is {:.3f}'.format(
-        rmse_types_with_filter.mean())
-    )
+        # print('rmse time is {:.3f}'.format(rmse_mean))
 
-    print('rmse # of events is {: .3f}'.format(rmse_num_events))
-    print('mae # of events is {: .3f}'.format(mae_num_events))
+        print('total sampling time is {total_time: .3f}'.format(total_time=total_sampling_time))
+        print('Number of total samples: {}'.format(pred_e_copy.flatten().size(0)))
+        print('Number of samples per sequence: {}'.format(num_samples))
 
-    # print('rmse time is {:.3f}'.format(rmse_mean))
 
-    print('total sampling time is {total_time: .3f}'.format(total_time=total_sampling_time))
-    print('Number of total samples: {}'.format(pred_e_copy.flatten().size(0)))
-    print('Number of samples per sequence: {}'.format(num_samples))
+        samples_dt = torch.load(f'./nullsamples/{d_name}/temp/samples_dt_1.pt')
 
-    # ## ADDED BY ME:
-    # print("MAPE MEAN", int(mape_mean))
-    # print("MAPE STD", int(mape_std))
-    # print("SMAPE MEAN", int(smape_mean))
-    # print("SMAPE STD", int(smape_std))
+        N = samples_dt.size(0)          # Batch size
+        sequences = []
+        # print(N)
+        for i in range(N):
+            dt_all, typ_all = [], []  
+            ## counter goes from 1 to 5
+            for j in range(1, counter+1):
+                
+                samples_dt = torch.load(f'./nullsamples/{d_name}/temp/samples_dt_{j}.pt')
+                samples_type = torch.load(f'./nullsamples/{d_name}/temp/samples_type_{j}.pt')
+                dt_part  = samples_dt[i, :, 0].tolist()
+                typ_part = samples_type[i, :, 0].tolist()
 
-    #with open(path_samples_result, 'w') as f:
-    #    f.write('distance (fixed forecasting): {:.3f}\n'.format(
-    #        distances_wo_filter.mean())
-    #    )
-#
-#        f.write('rmse type (fixed forecasting): {:.3f}\n'.format(
-#            rmse_types_wo_filter.mean())
-#        )
-#
-#        f.write('distance (interval forecasting): {:.3f}\n'.format(
-#            distances_with_filter.mean())
-#        )
-#
-#        f.write('rmse type (interval forecasting): {:.3f}\n'.format(
-#            rmse_types_with_filter.mean())
-#        )
-#
-#        f.write('rmse # of events: {: .3f}\n'.format(rmse_num_events))
-#        f.write('mae # of events: {: .3f}\n'.format(mae_num_events))
-#
-#        f.write('rmse time: {:.3f}\n'.format(rmse_mean))
-#
-#        f.write('total sampling time: {total_time: .3f}s\n'.format(total_time=total_sampling_time))
-#        f.write('Number of total samples: {}\n'.format(pred_e_copy.flatten().size(0)))
-#        f.write('Number of samples per sequence: {}\n'.format(num_samples))
-#        f.write('Num of training parameters: {}\n'.format(total_trainable_params))
-#
-#    save_args(args)
+                dt_all  += dt_part
+                typ_all += typ_part
+
+            seq, t_cum = [], 0.0
+            for d, k in zip(dt_all, typ_all):
+                t_cum += d
+                seq.append({
+                    'type_event': int(k),
+                    'time_since_last_event': float(d),
+                    'time_since_start': t_cum
+                })
+
+            pad = 20 
+            if counter != num_loops:                                     
+                seq.extend([{
+                    'type_event': 0,
+                    'time_since_last_event': 0,
+                    'time_since_start': 0
+                } for _ in range(pad)])
+
+            sequences.append(seq)                    
+
+        if counter != num_loops:    
+            dataset = {
+                'dim_process': 1,
+                'test': sequences
+            }
+
+            with open(f'./nullsamples/{d_name}/temp/test.pkl', 'wb') as f:
+                pickle.dump(dataset, f)
+
+            print("Made next test.pkl of size:", len(dataset['test'][0]))
+
+        else:
+            dataset = {
+                'dim_process': 1,
+                'generated': sequences
+            }
+
+            with open(f'./nullsamples/{d_name}/generated_{d_name}_{counter * 20}.pkl', 'wb') as f:
+                pickle.dump(dataset, f)
+
+            print("Made generated.pkl of size:", len(dataset['generated'][0]))
+        print("Counter:", counter)
+
+        print("\n\n\n")
+        
+
+
+    num_loops = 5
+    counter = 0
+    for i in range(num_loops):
+        counter += 1
+        gen_20(counter, num_loops)
 
     return args

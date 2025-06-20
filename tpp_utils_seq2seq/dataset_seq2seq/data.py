@@ -10,7 +10,7 @@ import os
 # import parser
 import argparse
 
-dataset_choices = {'stackoverflow', 'taxi', 'taobao', 'syn_5_0_2', 'financial', 'retweet', 'amazon', 'mooc', 'lastfm', 'hawkes1'}
+dataset_choices = {'stackoverflow', 'taxi', 'taobao', 'syn_5_0_2', 'financial', 'retweet', 'amazon', 'mooc', 'lastfm', 'hawkes1', 'nonstat_poisson', 'nonstat_renewal'}
 
 
 
@@ -139,6 +139,16 @@ def get_data(args):
             args.time_range = 43.8
         if args.tgt_len == 14:
             args.time_range = 35
+
+    if args.dataset == 'nonstat_renewal':
+        args.num_classes = 1
+        if args.tgt_len == 20:
+            args.time_range = 55
+
+    if args.dataset == 'nonstat_poisson':
+        args.num_classes = 1
+        if args.tgt_len == 20:
+            args.time_range = 55
 
     if args.dataset == 'amazon':      # MAX LENGTH 94, TAKE 88 AS SEQ PREDICTION
         args.num_classes = 16
