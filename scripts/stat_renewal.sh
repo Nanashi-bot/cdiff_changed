@@ -7,8 +7,8 @@ python3 main.py --batch_size 1024\
         --diffusion_steps 200\
         --gamma 0.99\
        	--log_home .\
-       	--dataset amazon\
-       	--dataset_dir ~/github/cdiff_changed/data/synthetic/hawkes1/ \
+       	--dataset stat_renewal\
+       	--dataset_dir ./data/synthetic/hawkes1/ \
        	--transformer_dim 32\
        	--transformer_heads 2\
        	--num_encoder_layers 1\
