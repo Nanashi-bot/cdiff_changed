@@ -130,9 +130,10 @@ def run_eval(args):
         args = parser.parse_args()
         eval_seed = args.eval_seed
 
+    d_name = "amazon"
 
     ## CHANGED BY ME:
-    path_main = './log/flow/nonstat_poisson/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1_1024'
+    path_main = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1'
     #path_args = '{}/args.pickle'.format(args.log_path)
 #    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
     path_args = os.path.join(path_main, "args.pickle")
@@ -189,64 +190,78 @@ def run_eval(args):
     # std_inter_time = args.std_inter_time
 
 
-    # args.validation = False
+    args.validation = False
 
-    # ### CHANGED HERE
-    # args.dataset_dir = './nullsamples/nonstat_poisson'
-    # # args.dataset_dir = './data/amazon1024test'
-    # train_loader, test_loader, data_shape, num_classes = get_data(args)
-    # args.validation = True
+    ### CHANGED HERE
+    args.dataset_dir = './nullsamples/nonstat_poisson'
+    # args.dataset_dir = './data/amazon1024test'
+    train_loader, test_loader, data_shape, num_classes = get_data(args)
+    args.validation = True
 
-    # #########################################################
-    # ##################### Specify model #####################
-    # #########################################################
+    #########################################################
+    ##################### Specify model #####################
+    #########################################################
 
-    # model = get_model(args, num_classes=num_classes)
-    # checkpoint = torch.load(path_check, weights_only=False)
+    model = get_model(args, num_classes=num_classes)
+    checkpoint = torch.load(path_check, weights_only=False)
 
-    # model.load_state_dict(checkpoint['model'])
-    # print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
+    model.load_state_dict(checkpoint['model'])
+    print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
 
-    # total_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    # print(f'{total_trainable_params: } training parameters.')
+    total_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f'{total_trainable_params: } training parameters.')
 
 
 
-    # ####################################################################################
-    # ##################################### Sampling #####################################
-    # ####################################################################################
+    ####################################################################################
+    ##################################### Sampling #####################################
+    ####################################################################################
 
-    # device = args.device
-    # model = model.to(device)
-    # model = model.eval()
+    device = args.device
+    model = model.to(device)
+    model = model.eval()
+
+
+    import copy
+
+    with open(f'./data/{d_name}/test.pkl', 'rb') as f:
+        data = pickle.load(f)
+
+    template = [{'type_event': 0,
+                'time_since_last_event': 0,
+                'time_since_start': 0}]
+
+    data['test'].extend([copy.deepcopy(template) for _ in range(1024 - len(data['test']))])
+
+    with open(f'./nullsamples/{d_name}/test.pkl', 'wb') as f:
+        pickle.dump(data, f)
 
     def gen_20(counter, num_loops):
-
 
         min_inter_time = args.min_inter_time
         args.validation = False
 
         ### CHANGED HERE
         if counter == 1:
-            args.dataset_dir = './nullsamples/nonstat_poisson'
+            args.dataset_dir = f'./nullsamples/{d_name}'
         else:
-            args.dataset_dir = './nullsamples/nonstat_poisson/temp'
+            args.dataset_dir = f'./nullsamples/{d_name}/temp'
         # args.dataset_dir = './data/amazon1024test'
         train_loader, test_loader, data_shape, num_classes = get_data(args)
         args.validation = True
 
-        #########################################################
-        ##################### Specify model #####################
-        #########################################################
+        # #########################################################
+        # ##################### Specify model #####################
+        # #########################################################
 
-        model = get_model(args, num_classes=num_classes)
-        checkpoint = torch.load(path_check, weights_only=False)
+        # model = get_model(args, num_classes=num_classes)
+        # checkpoint = torch.load(path_check, weights_only=False)
 
-        model.load_state_dict(checkpoint['model'])
-        print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
+        # model.load_state_dict(checkpoint['model'])
+        # print('Loaded weights for model at {}/{} epochs'.format(checkpoint['current_epoch'], args.epochs))
 
-        total_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-        print(f'{total_trainable_params: } training parameters.')
+        # total_trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        # print(f'{total_trainable_params: } training parameters.')
 
 
 
@@ -254,9 +269,9 @@ def run_eval(args):
         ##################################### Sampling #####################################
         ####################################################################################
 
-        device = args.device
-        model = model.to(device)
-        model = model.eval()
+        # device = args.device
+        # model = model.to(device)
+        # model = model.eval()
 
         ##########################################################################################
         ##################################### Specify Saving #####################################
@@ -264,7 +279,7 @@ def run_eval(args):
 
         ############## Saving base ##############
 
-        path_samples = "./nullsamples/nonstat_poisson/temp"
+        path_samples = f"./nullsamples/{d_name}/temp"
 
         args.path_samples = path_samples
 
@@ -349,15 +364,17 @@ def run_eval(args):
                     #hist_x = hist_x_original.clone()
                     #hist_e = hist_e_original.clone()
                         ### GIVING NULL CONTEXT FOR SAMPLING:
-                    # if args.dataset == 'amazon':
-                    #     tgt = 20
-                    #     batchsize = 6000
-                    #     batchsize = 1024
-                    #     num_events = 16
+                    if args.dataset == 'amazon':
+                        # tgt = 20
+                        batchsize = 1024
+                        num_events = 16
                     if args.dataset == 'hawkes1':
                         batchsize = 1024
                         num_events = 1
                     if args.dataset == 'nonstat_poisson':
+                        batchsize = 1024
+                        num_events = 1
+                    if args.dataset == 'nonstat_renewal':
                         batchsize = 1024
                         num_events = 1
                     # if args.dataset == 'stackoverflow':
@@ -374,8 +391,8 @@ def run_eval(args):
                     #     num_events = 3
                     if counter == 1:
                         hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
-                        # hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
-                        hist_e = torch.randint(0, num_events, (batchsize, args.tgt_len)).to('cuda')
+                        hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
+                        # hist_e = torch.randint(0, num_events, (batchsize, args.tgt_len)).to('cuda')
                         history_times = torch.zeros(batchsize, args.tgt_len).to('cuda')
 
                     print("History x:", hist_x[0])
@@ -541,8 +558,7 @@ def run_eval(args):
         print('Number of samples per sequence: {}'.format(num_samples))
 
 
-        samples_dt = torch.load('./nullsamples/nonstat_poisson/temp/samples_dt_1.pt')
-        print("Making next test.pkl:")
+        samples_dt = torch.load(f'./nullsamples/{d_name}/temp/samples_dt_1.pt')
 
         N = samples_dt.size(0)          # Batch size
         sequences = []
@@ -552,13 +568,15 @@ def run_eval(args):
             ## counter goes from 1 to 5
             for j in range(1, counter+1):
                 
-                samples_dt = torch.load(f'./nullsamples/nonstat_poisson/temp/samples_dt_{j}.pt')
-                samples_type = torch.load(f'./nullsamples/nonstat_poisson/temp/samples_type_{j}.pt')
+                samples_dt = torch.load(f'./nullsamples/{d_name}/temp/samples_dt_{j}.pt')
+                samples_type = torch.load(f'./nullsamples/{d_name}/temp/samples_type_{j}.pt')
                 dt_part  = samples_dt[i, :, 0].tolist()
                 typ_part = samples_type[i, :, 0].tolist()
 
                 dt_all  += dt_part
                 typ_all += typ_part
+                if i == 1:
+                    print(f'./nullsamples/{d_name}/temp/samples_type_{j} ADDED')
 
             seq, t_cum = [], 0.0
             for d, k in zip(dt_all, typ_all):
@@ -581,22 +599,22 @@ def run_eval(args):
 
         if counter != num_loops:    
             dataset = {
-                'dim_process': 1,
+                'dim_process': args.num_classes,
                 'test': sequences
             }
 
-            with open('./nullsamples/nonstat_poisson/temp/test.pkl', 'wb') as f:
+            with open(f'./nullsamples/{d_name}/temp/test.pkl', 'wb') as f:
                 pickle.dump(dataset, f)
 
             print("Made next test.pkl of size:", len(dataset['test'][0]))
 
         else:
             dataset = {
-                'dim_process': 1,
+                'dim_process': args.num_classes,
                 'generated': sequences
             }
 
-            with open('./nullsamples/nonstat_poisson/generated_nonstat_poisson_200.pkl', 'wb') as f:
+            with open(f'./nullsamples/{d_name}/generated_{d_name}_{counter * 20}.pkl', 'wb') as f:
                 pickle.dump(dataset, f)
 
             print("Made generated.pkl of size:", len(dataset['generated'][0]))
@@ -606,7 +624,7 @@ def run_eval(args):
         
 
 
-    num_loops = 10
+    num_loops = 2
     counter = 0
     for i in range(num_loops):
         counter += 1

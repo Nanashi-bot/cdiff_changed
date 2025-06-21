@@ -10,7 +10,8 @@ The different util files are:
 - null_all_tgt_utils.py: For running the eval part with null context
 - train_for_null_utils.py: To train for null context evaluation
 - utilsreal.py: The original utils file 
-- 20_40_utils.py: To generate events 20 to 40 from the initial 0-20 events generated (In Progress)
+- 20_40_utils.py: To generate and additional 20 events from the initial 0-20 events generated
+- auto20genutils.py: To generate the first 20 events with null context and the subsequent 20 events using the previously generated events in a loop 
 
 ## Scripts
 The scripts are located in the scripts/ folder and must be copied to the root directory and then run.
