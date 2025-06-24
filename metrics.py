@@ -391,8 +391,7 @@ def count_mae(ref_seq, decode_seq, target_type, obs_period_start=None, obs_perio
 
 
 def filter_points(ground_truth_tuple, sample_tuple, time_range):
-    ## MAYBE FOR TAOBAO
-    #filter_max_time = ground_truth_tuple[0][0] + time_range
+    # filter_max_time = ground_truth_tuple[0][0] + time_range
     filter_max_time = time_range
     horizon = len(ground_truth_tuple[0])
 
@@ -510,3 +509,4 @@ def edit_distance_mt_mc(ref, decoded, del_cost, trans_cost, n_types):
                                           - del_cost[cost_idx] * (n_ins_per_cost + n_del_per_cost)
 
     return distances, total_trans_cost, num_true, num_del, num_ins, num_align
+
