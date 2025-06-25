@@ -130,10 +130,11 @@ def run_eval(args):
         args = parser.parse_args()
         eval_seed = args.eval_seed
 
-    d_name = "amazon"
+    d_name = "taxi20"
 
     ## CHANGED BY ME:
-    path_main = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1'
+    # path_main = './log/flow/taxi/cross_diffusion_discrete_boxcox_200_tgt_len_20/cosanneal/sample1'
+    path_main = './log/flow/taxi/cross_diffusion_discrete_boxcox_100_tgt_len_20/cosanneal/sample1'
     #path_args = '{}/args.pickle'.format(args.log_path)
 #    path_args = './log/flow/amazon/cross_diffusion_discrete_boxcox_200_tgt_len_88/cosanneal/2025-06-12_14-53-41/args.pickle'
     path_args = os.path.join(path_main, "args.pickle")
@@ -224,17 +225,23 @@ def run_eval(args):
 
     import copy
 
-    with open(f'./data/{d_name}/test.pkl', 'rb') as f:
+    with open(f'./data/taxi/test.pkl', 'rb') as f:
+    # with open(f'./data/so/so_v2/test.pkl', 'rb') as f:
         data = pickle.load(f)
 
     template = [{'type_event': 0,
                 'time_since_last_event': 0,
                 'time_since_start': 0}]
 
-    data['test'].extend([copy.deepcopy(template) for _ in range(1024 - 200)])
+    if len(data['test']) < 1024:
+        data['test'].extend([copy.deepcopy(template) for _ in range(1024 - len(data['test']))])
+    else:
+        data['test'] = data['test'][:1024]
 
     with open(f'./nullsamples/{d_name}/test.pkl', 'wb') as f:
         pickle.dump(data, f)
+
+    # print("1024 length batch generated: ",len(data['test']))
 
     def gen_20(counter, num_loops):
 
@@ -247,7 +254,8 @@ def run_eval(args):
             args.dataset_dir = f'./nullsamples/{d_name}'
         else:
             args.dataset_dir = f'./nullsamples/{d_name}/temp'
-        # args.dataset_dir = './data/amazon1024test'
+
+        # args.dataset_dir = './nullsamples/so20'
         train_loader, test_loader, data_shape, num_classes = get_data(args)
         args.validation = True
 
@@ -378,18 +386,25 @@ def run_eval(args):
                     if args.dataset == 'nonstat_renewal':
                         batchsize = 1024
                         num_events = 1
-                    # if args.dataset == 'stackoverflow':
-                    #     tgt = 98
-                    #     batchsize = 401
-                    #     num_events = 22
+                    if args.dataset == 'stackoverflow':
+                        tgt = 98
+                        # batchsize = 401
+                        batchsize = 1024
+                        num_events = 22
                     # if args.dataset == 'taxi':
                     #     tgt = 10
                     #     batchsize = 128
                     #     num_events = 10
-                    # if args.dataset == 'retweet':
-                    #     tgt = 36
-                    #     batchsize = 500
-                    #     num_events = 3
+                    if args.dataset == 'retweet':
+                        tgt = 36
+                        # batchsize = 500
+                        batchsize = 1024
+                        num_events = 3
+                    if args.dataset == 'taxi':
+                        # batchsize = 500
+                        batchsize = 1024
+                        num_events = 10
+
                     if counter == 1:
                         hist_x = torch.zeros(batchsize, args.tgt_len).to('cuda')
                         # hist_e = torch.randint(0, num_events+1, (batchsize, args.tgt_len)).to('cuda')
@@ -401,7 +416,7 @@ def run_eval(args):
                     print("History times:", history_times[0])
 
                     p_e, p_x = model.sample(hist_x, hist_e, args.tgt_len, history_times)
-                    # print(pred_x.shape)
+                    print(pred_x.shape)
                     # print(p_x.shape)
                     pred_x = torch.cat([pred_x, p_x.unsqueeze(-1)], dim=-1)
                     pred_e = torch.cat([pred_e, p_e.unsqueeze(-1)], dim=-1)
@@ -598,7 +613,7 @@ def run_eval(args):
 
         if counter != num_loops:    
             dataset = {
-                'dim_process': 1,
+                'dim_process': args.num_classes,
                 'test': sequences
             }
 
@@ -609,7 +624,7 @@ def run_eval(args):
 
         else:
             dataset = {
-                'dim_process': 1,
+                'dim_process': args.num_classes,
                 'generated': sequences
             }
 
@@ -623,7 +638,7 @@ def run_eval(args):
         
 
 
-    num_loops = 5
+    num_loops = 2
     counter = 0
     for i in range(num_loops):
         counter += 1
