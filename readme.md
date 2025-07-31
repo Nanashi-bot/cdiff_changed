@@ -1,5 +1,5 @@
 # Cross Diffusion 
-Changed source code for Interacting Diffusion Processes for Event Sequence Forecasting for my summer research internship. The original version was taken from https://github.com/networkslab/cdiff.
+Changed source code for Interacting Diffusion Processes for Event Sequence Forecasting for my summer research internship. The original version was taken from https://github.com/networkslab/cdiff. View presentation_AG.pptx presentation to see the results obtained.
 
 # Run the Code
 
