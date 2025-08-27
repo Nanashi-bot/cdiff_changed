@@ -1,5 +1,5 @@
 # Cross Diffusion 
-Changed source code for Interacting Diffusion Processes for Event Sequence Forecasting for my summer research internship. The original version was taken from https://github.com/networkslab/cdiff. View presentation_AG.pptx presentation to see the results obtained.
+Changed source code for Interacting Diffusion Processes for Event Sequence Forecasting for my summer research internship. The original version was taken from https://github.com/networkslab/cdiff. View [presentation](https://github.com/Nanashi-bot/cdiff_changed/blob/main/presentation_AG.pptx) to see the results obtained.
 
 # Run the Code
 
@@ -85,6 +85,7 @@ The following repositories are used in our code, either in close to original for
 - [Multinomial Diffusion](https://github.com/ehoogeboom/multinomial_diffusion)
 - [Attentive Neural Hawkes Process](https://github.com/yangalan123/anhp-andtt)
 - [Intensity Free Temporal Point Process](https://github.com/shchur/ifl-tpp)
+
 
 
 
